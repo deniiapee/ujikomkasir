@@ -69,9 +69,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Menangani Undefined index: harga_beli
         if (!is_null($harga_beli)) {
             $sql = "INSERT INTO penjualan_detail (penjualan_id, produk_id, qty, harga_beli, harga_jual, created_at)
-                    VALUES (:penjualan_id, :produk_id, :qty, :harga_beli, :harga_jual, :created_at)";
+            VALUES (:penjualan_id, :produk_id, :qty, :harga_beli, :harga_jual, :created_at)";
+    
             $stmt = $pdo->prepare($sql);
             $stmt->execute(array(
+                ':penjualan_detail_id' => $penjualan_detail_id,
                 ':penjualan_id' => $penjualan_id,
                 ':produk_id' => $produk_id,
                 ':qty' => $qty,
@@ -534,24 +536,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
                 <div class="offset-md-3 col-md-6 mb-3">
-                    <div class="form-group">
-                        <label for="barang">barang:</label>
-                        <select class="form-control" id="produk_id" name="produk_id">
-                        <option value="" disabled selected>Pilih barang...</option>
-                            <?php 
-                                if($view3){
-                                    while($row = mysqli_fetch_assoc($view3)){
-                                        $nama_produk = $row['nama_produk'];
-                                        $id = $row['produk_id'];
-                                        $harga = $row['harga_jual'];
-                                        echo "<option value='$id' data-harga='$harga'>$nama_produk</option>";
-                                    }
-                                } else {
-                                    echo "<option value=''>Gagal mengambil data</option>";
-                                }
-                            ?>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label for="searchBarang">BARANG</label>
+                    <input type="text" class="form-control" id="searchBarang" placeholder="Cari barang...">
+                </div>
+
+                <div class="form-group" id="daftarBarang">
+                    <?php 
+                        if($view3){
+                            while($row = mysqli_fetch_assoc($view3)){
+                                $nama_produk = $row['nama_produk'];
+                                $id = $row['produk_id'];
+                                $harga = $row['harga_jual'];
+                    ?>
+                                <div class='form-check barang' data-nama='<?php echo $nama_produk; ?>' style="display: none;">
+                                    <input class='form-check-input' type='checkbox' name='produk_id[]' value='<?php echo $id; ?>' data-harga='<?php echo $harga; ?>' id='produk_<?php echo $id; ?>'>
+                                    <label class='form-check-label' for='produk_<?php echo $id; ?>'><?php echo $nama_produk; ?></label>
+                                    <div class='form-group'>
+                                        <label for='jumlah_<?php echo $id; ?>'>JUMLAH</label>
+                                        <input type='number' class='form-control' name='jumlah_<?php echo $id; ?>' id='jumlah_<?php echo $id; ?>' value='1' min='1'>
+                                    </div>
+                                </div>
+                    <?php
+                            }
+                        } else {
+                            echo "<p>Gagal mengambil data</p>";
+                        }
+                    ?>
+                </div>
+                </div>
+                <div class="offset-md-3 col-md-6 mb-3">
+                    <label for="tanggal_penjualan" class="form-label">tanggal_penjualan:</label>
+                    <input type="date" class="form-control" id="tanggal_penjualan" name="tanggal_penjualan">
                 </div>
                 <div class="offset-md-3 col-md-6 mb-3">
                     <label for="bayar" class="form-label">total:</label>
@@ -675,6 +691,66 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 sisaInput.value = '';
             }
         }
+    });
+</script>
+<script>
+    // search barang
+    document.getElementById('searchBarang').addEventListener('input', function() {
+        var keyword = this.value.toLowerCase();
+        var barangs = document.querySelectorAll('.barang');
+        
+        if (keyword.trim() === '') { // Jika input pencarian kosong
+            barangs.forEach(function(barang) {
+                barang.style.display = 'none'; // Semua barang disembunyikan
+            });
+        } else {
+            barangs.forEach(function(barang) {
+                var nama = barang.getAttribute('data-nama').toLowerCase();
+                var checkbox = barang.querySelector('.form-check-input');
+                if (nama.includes(keyword)) {
+                    barang.style.display = 'block';
+                } else if (!checkbox.checked) {
+                    barang.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
+<script>
+    // Fungsi untuk mengupdate total harga
+    function updateTotal() {
+        var total = 0;
+
+        // Loop melalui semua barang yang dipilih
+        document.querySelectorAll('.form-check-input:checked').forEach(function(checkbox) {
+            var id = checkbox.value;
+            var harga = parseInt(checkbox.dataset.harga);
+            var jumlah = parseInt(document.getElementById('jumlah_' + id).value);
+            
+            total += harga * jumlah;
+        });
+
+        // Update tampilan total harga
+        document.getElementById('total').value = total;
+
+        // Hitung sisa pembayaran jika input bayar diisi
+        var bayar = parseInt(document.getElementById('bayar').value);
+        var sisa = bayar - total;
+        if (!isNaN(sisa)) {
+            document.getElementById('sisa').value = sisa;
+        }
+    }
+
+    // Event listener untuk checkbox dan input jumlah
+    document.querySelectorAll('.form-check-input, .jumlah').forEach(function(element) {
+        element.addEventListener('change', function() {
+            updateTotal();
+        });
+    });
+
+    // Event listener untuk input bayar
+    document.getElementById('bayar').addEventListener('input', function() {
+        updateTotal();
     });
 </script>
 

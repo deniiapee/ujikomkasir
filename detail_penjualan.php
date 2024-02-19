@@ -2,7 +2,13 @@
 include 'koneksi.php';
 
 session_start();
-$sql = "SELECT * FROM penjualan_detail";
+$sql = "SELECT penjualan.*, toko.nama_toko, produk.nama_produk ,pelanggan.*
+        FROM penjualan 
+        INNER JOIN toko ON penjualan.toko_id = toko.toko_id
+        INNER JOIN produk ON produk.produk_id = produk.produk_id
+        INNER JOIN pelanggan ON penjualan.pelanggan_id = pelanggan.pelanggan_id
+        
+        ";
 $result = mysqli_query($koneksi, $sql);
 
 if (!$result) {
@@ -338,13 +344,14 @@ if (!$result) {
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th>ID Detail Penjualan</th>
                                         <th>ID Penjualan</th>
-                                        <th>Nama Produk</th>
-                                        <th>Jumlah</th>
-                                        <th>Harga Beli</th>
-                                        <th>Harga Jual</th>
-                                        <th>Dibuat Pada</th>
+                                        <th>nama toko</th>
+                                        <th>nama produk</th>
+                                        <th>Tanggal Penjualan</th>
+                                        <th>nama Pelanggan</th>
+                                        <th>harga jual</th>
+                                        <th>harga beli</th>
+                                        <th>Sisa</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -353,13 +360,14 @@ if (!$result) {
                                         // Output data dari setiap baris
                                         while ($row = mysqli_fetch_assoc($result)) {
                                             echo "<tr>";
-                                            echo "<td>" . $row["penjualan_detail_id"] . "</td>";
                                             echo "<td>" . $row["penjualan_id"] . "</td>";
-                                            echo "<td>" . $row["produk_id"] . "</td>"; // Output nama produk
-                                            echo "<td>" . $row["qty"] . "</td>";
-                                            echo "<td>" . $row["harga_beli"] . "</td>";
-                                            echo "<td>" . $row["harga_jual"] . "</td>";
-                                            echo "<td>" . $row["created_at"] . "</td>";
+                                            echo "<td>" . $row["nama_toko"] . "</td>";
+                                            echo "<td>" . $row["nama_produk"] . "</td>"; // Output nama produk
+                                            echo "<td>" . $row["tanggal_penjualan"] . "</td>";
+                                            echo "<td>" . $row["nama_pelanggan"] . "</td>";
+                                            echo "<td>" . $row["total"] . "</td>";
+                                            echo "<td>" . $row["bayar"] . "</td>";
+                                            echo "<td>" . $row["sisa"] . "</td>";
                                             echo "</tr>";
                                         }
                                     } else {
