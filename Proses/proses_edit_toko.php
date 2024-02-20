@@ -15,13 +15,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       // var_dump($koneksi);
     }
     else{
-        header("location: ../toko.php");
+        header("location: ../admin/toko.php");
         //var_dump($koneksi);
     }
     exit();
 } else {
     // Jika tidak ada data POST, arahkan kembali ke halaman edit
-    header("location: ../edit_toko.php");
+    header("location: ../Edit/edit_toko.php");
     exit();
 }
 ?>

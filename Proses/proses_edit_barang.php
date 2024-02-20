@@ -17,10 +17,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Setelah selesai, arahkan kembali ke halaman utama atau halaman yang sesuai
     if(!$updateSql){
-        echo mysqli_error();
+        echo mysqli_error($koneksi);
     }
     else{
-        header("location: ../list_produk.php");
+        header("location: ../admin/list_produk.php");
 
     }
     exit();

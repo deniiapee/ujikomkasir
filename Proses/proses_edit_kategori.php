@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if($result) {
         // Jika proses edit berhasil, arahkan kembali ke halaman kategori
-        header("location: ../kategori.php");
+        header("location: ../admin/kategori.php");
         exit();
     } else {
         echo "Error: " . mysqli_error($koneksi);

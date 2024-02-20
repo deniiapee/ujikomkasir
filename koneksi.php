@@ -1,12 +1,14 @@
 <?php
-class Database {
+class Database
+{
     private $host = "localhost";
     private $username = "root";
     private $password = "";
     private $database = "kasir";
     private $conn;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->conn = new mysqli($this->host, $this->username, $this->password, $this->database);
 
         if ($this->conn->connect_error) {
@@ -14,11 +16,11 @@ class Database {
         }
     }
 
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->conn;
     }
 }
 
-$database = new Database("localhost","root", "", "kasir");
+$database = new Database("localhost", "root", "", "kasir");
 $koneksi = $database->getConnection();
-?>

@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Setelah selesai, arahkan kembali ke halaman utama atau halaman yang sesuai
     if($result){
         // Redirect ke halaman pengguna setelah proses edit selesai
-        header("location: ../pengguna.php");
+        header("location: ../admin/pengguna.php");
         exit();
     }
     else{
