@@ -190,8 +190,8 @@ header("location:detail_pembelian.php?id=$row[pembelian_id]");
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Menu:</h6>
-                        <a class="collapse-item active" href="pembelian.php">Pembelian</a>
                         <a class="collapse-item" href="penjualan.php">Penjualan</a>
+                        <a class="collapse-item active" href="pembelian.php">Pembelian</a>
                         <a class="collapse-item" href="detail_penjualan.php">Detail Penjualan</a>
                         <a class="collapse-item" href="detail_pembelian.php">Detail Pembelian</a>
 
@@ -476,7 +476,8 @@ header("location:detail_pembelian.php?id=$row[pembelian_id]");
                 <label for="keterangan">Keterangan:</label>
                 <textarea id="keterangan" name="keterangan"></textarea>
             </div>
-            <input type="submit" name="submit" value="Submit">
+            <input type="submit" name="submit" value="Submit" style="background-color: #007bff; color: white;" onmouseover="this.style.backgroundColor='#0056b3'" onmouseout="this.style.backgroundColor='#007bff'">
+
         </form>
     </div>
 </body>

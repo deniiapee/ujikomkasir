@@ -216,7 +216,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <li class="nav-item">
                 <a class="nav-link" href="pengguna.php">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>data user</span></a>
+                    <span>Data user</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="../Logout.php">
@@ -307,180 +307,194 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <!-- Page Heading -->
                     <!DOCTYPE html>
-                    <html lang="en">
+<html lang="en">
 
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Form Penjualan</title>
-                        <style>
-                            body {
-                                font-family: Arial, sans-serif;
-                                margin: 20px;
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaksi Penjualan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        textarea,
+        select {
+            margin-bottom: 10px;
+            padding: 8px;
+            width: calc(100% - 16px);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .offset-md-3 {
+            margin-left: 25%;
+        }
+
+        .col-md-6 {
+            width: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container text">
+        <h2>Transaksi Penjualan</h2>
+        <form action="" method="POST">
+            <div class="row">
+                <div class="offset-md-3 col-md-6 mb-3">
+                    <div class="form-group">
+                        <label for="toko">Toko:</label>
+                        <select class="form-control" id="toko_id" name="toko_id">
+                            <option value="" disabled selected>Toko...</option>
+                            <?php
+                            if ($result) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    $nama_toko = $row['nama_toko'];
+                                    $id = $row['toko_id'];
+                                    echo "<option value='$id' >$nama_toko</option>";
+                                }
+                            } else {
+                                echo "<option value=''>Gagal mengambil data</option>";
                             }
-
-                            h2 {
-                                margin-bottom: 10px;
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="offset-md-3 col-md-6 mb-3">
+                    <div class="form-group">
+                        <label for="user">User:</label>
+                        <select class="form-control" id="user_id" name="user_id">
+                            <option value="" disabled selected>User...</option>
+                            <?php
+                            if ($view1) {
+                                while ($row = mysqli_fetch_assoc($view1)) {
+                                    $username = $row['username'];
+                                    $id = $row['user_id'];
+                                    echo "<option value='$id'>$username</option>";
+                                }
+                            } else {
+                                echo "<option value=''>Gagal mengambil data</option>";
                             }
-
-                            form {
-                                margin-bottom: 20px;
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="offset-md-3 col-md-6 mb-3">
+                    <div class="form-group">
+                        <label for="pelanggan">Pelanggan:</label>
+                        <select class="form-control" id="pelanggan_id" name="pelanggan_id">
+                            <option value="" disabled selected>Pilih Pelanggan...</option>
+                            <?php
+                            if ($view2) {
+                                while ($row = mysqli_fetch_assoc($view2)) {
+                                    $nama_pelanggan = $row['nama_pelanggan'];
+                                    $id = $row['pelanggan_id'];
+                                    echo "<option value='$id'>$nama_pelanggan</option>";
+                                }
+                            } else {
+                                echo "<option value=''>Gagal mengambil data</option>";
                             }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="offset-md-3 col-md-6 mb-3">
+                    <div class="form-group">
+                        <label for="searchBarang">Barang</label>
+                        <input type="text" class="form-control" id="searchBarang" placeholder="Cari barang...">
+                    </div>
 
-                            label {
-                                display: block;
-                                margin-bottom: 5px;
-                            }
-
-                            input[type="text"],
-                            input[type="number"],
-                            input[type="date"],
-                            textarea,
-                            button {
-                                margin-bottom: 10px;
-                                padding: 5px;
-                                width: 300px;
-                            }
-
-                            button {
-                                width: auto;
-                                padding: 8px 12px;
-                                background-color: #4CAF50;
-                                color: white;
-                                border: none;
-                                border-radius: 4px;
-                                cursor: pointer;
-                            }
-
-                            button:hover {
-                                background-color: #45a049;
-                            }
-                        </style>
-                    </head>
-
-
-                    <body>
-                        <div class="container text">
-                            <h2 class="text-center">Form Transaksi Penjualan</h2>
-                            <form action="" method="POST">
-                                <div class="row">
-                                    <div class="offset-md-3 col-md-6 mb-3">
-                                        <div class="form-group">
-                                            <label for="toko">Toko:</label>
-                                            <select class="form-control" id="toko_id" name="toko_id">
-                                                <option value="" disabled selected>toko...</option>
-                                                <?php
-                                                if ($result) {
-                                                    while ($row = mysqli_fetch_assoc($result)) {
-                                                        $nama_toko = $row['nama_toko'];
-                                                        $id = $row['toko_id'];
-                                                        echo "<option value='$id' >$nama_toko</option>";
-                                                    }
-                                                } else {
-                                                    echo "<option value=''>Gagal mengambil data</option>";
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="offset-md-3 col-md-6 mb-3">
-                                        <div class="form-group">
-                                            <label for="user">user:</label>
-                                            <select class="form-control" id="user_id" name="user_id">
-                                                <option value="" disabled selected>user...</option>
-                                                <?php
-                                                if ($view1) {
-                                                    while ($row = mysqli_fetch_assoc($view1)) {
-                                                        $username = $row['username'];
-                                                        $id = $row['user_id'];
-                                                        echo "<option value='$id'>$username</option>";
-                                                    }
-                                                } else {
-                                                    echo "<option value=''>Gagal mengambil data</option>";
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="offset-md-3 col-md-6 mb-3">
-                                        <div class="form-group">
-                                            <label for="pelanggan">pelanggan:</label>
-                                            <select class="form-control" id="pelanggan_id" name="pelanggan_id">
-                                                <option value="" disabled selected>Pilih Pelanggan...</option>
-                                                <?php
-                                                if ($view2) {
-                                                    while ($row = mysqli_fetch_assoc($view2)) {
-                                                        $nama_pelanggan = $row['nama_pelanggan'];
-                                                        $id = $row['pelanggan_id'];
-                                                        echo "<option value='$id'>$nama_pelanggan</option>";
-                                                    }
-                                                } else {
-                                                    echo "<option value=''>Gagal mengambil data</option>";
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="offset-md-3 col-md-6 mb-3">
-                                        <div class="form-group">
-                                            <label for="searchBarang">BARANG</label>
-                                            <input type="text" class="form-control" id="searchBarang" placeholder="Cari barang...">
-                                        </div>
-
-                                        <div class="form-group" id="daftarBarang">
-                                            <?php
-                                            if ($view3) {
-                                                while ($row = mysqli_fetch_assoc($view3)) {
-                                                    $nama_produk = $row['nama_produk'];
-                                                    $id = $row['produk_id'];
-                                                    $harga = $row['harga_jual'];
-                                            ?>
-                                                    <div class='form-check barang' data-nama='<?php echo $nama_produk; ?>' style="display: none;">
-                                                        <input class='form-check-input' type='checkbox' name='produk_id[]' value='<?php echo $id; ?>' data-harga='<?php echo $harga; ?>' id='produk_<?php echo $id; ?>'>
-                                                        <label class='form-check-label' for='produk_<?php echo $id; ?>'><?php echo $nama_produk; ?></label>
-                                                        <div class='form-group'>
-                                                            <label for='jumlah_<?php echo $id; ?>'>JUMLAH</label>
-                                                            <input type='number' class='form-control' name='jumlah_<?php echo $id; ?>' id='jumlah_<?php echo $id; ?>' value='1' min='1'>
-                                                        </div>
-                                                    </div>
-                                            <?php
-                                                }
-                                            } else {
-                                                echo "<p>Gagal mengambil data</p>";
-                                            }
-                                            ?>
-                                        </div>
-                                    </div>
-                                    <div class="offset-md-3 col-md-6 mb-3">
-                                        <label for="tanggal_penjualan" class="form-label">tanggal_penjualan:</label>
-                                        <input type="date" class="form-control" id="tanggal_penjualan" name="tanggal_penjualan">
-                                    </div>
-                                    <div class="offset-md-3 col-md-6 mb-3">
-                                        <label for="bayar" class="form-label">total:</label>
-                                        <input type="text" class="form-control" id="total" name="total">
-                                    </div>
-                                    <div class="offset-md-3 col-md-6 mb-3">
-                                        <label for="bayar" class="form-label">Bayar:</label>
-                                        <input type="text" class="form-control" id="bayar" name="bayar">
-                                    </div>
-                                    <div class="offset-md-3 col-md-6 mb-3">
-                                        <label for="sisa" class="form-label">Sisa:</label>
-                                        <input type="text" class="form-control" id="sisa" name="sisa">
-                                    </div>
-                                    <div class="offset-md-3 col-md-6 mb-3">
-                                        <label for="keterangan" class="form-label">Keterangan:</label>
-                                        <input type="text" class="form-control" id="keterangan" name="keterangan">
-                                    </div>
-                                    <div class="offset-md-3 col-md-6 mb-3">
-                                        <button type="submit" class="btn btn-primary" name="submit">Submit</button>
-
+                    <div class="form-group" id="daftarBarang">
+                        <?php
+                        if ($view3) {
+                            while ($row = mysqli_fetch_assoc($view3)) {
+                                $nama_produk = $row['nama_produk'];
+                                $id = $row['produk_id'];
+                                $harga = $row['harga_jual'];
+                        ?>
+                                <div class='form-check barang' data-nama='<?php echo $nama_produk; ?>' style="display: none;">
+                                    <input class='form-check-input' type='checkbox' name='produk_id[]' value='<?php echo $id; ?>' data-harga='<?php echo $harga; ?>' id='produk_<?php echo $id; ?>'>
+                                    <label class='form-check-label' for='produk_<?php echo $id; ?>'><?php echo $nama_produk; ?></label>
+                                    <div class='form-group'>
+                                        <label for='jumlah_<?php echo $id; ?>'>Jumlah</label>
+                                        <input type='number' class='form-control' name='jumlah_<?php echo $id; ?>' id='jumlah_<?php echo $id; ?>' value='1' min='1'>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
-                    </body>
+                        <?php
+                            }
+                        } else {
+                            echo "<p>Gagal mengambil data</p>";
+                        }
+                        ?>
+                    </div>
+                </div>
+                <div class="offset-md-3 col-md-6 mb-3">
+                    <label for="tanggal_penjualan" class="form-label">Tanggal Penjualan:</label>
+                    <input type="date" class="form-control" id="tanggal_penjualan" name="tanggal_penjualan">
+                </div>
+                <div class="offset-md-3 col-md-6 mb-3">
+                    <label for="total" class="form-label">Total:</label>
+                    <input type="text" class="form-control" id="total" name="total">
+                </div>
+                <div class="offset-md-3 col-md-6 mb-3">
+                    <label for="bayar" class="form-label">Bayar:</label>
+                    <input type="text" class="form-control" id="bayar" name="bayar">
+                </div>
+                <div class="offset-md-3 col-md-6 mb-3">
+                    <label for="sisa" class="form-label">Sisa:</label>
+                    <input type="text" class="form-control" id="sisa" name="sisa">
+                </div>
+                <div class="offset-md-3 col-md-6 mb-3">
+                    <label for="keterangan" class="form-label">Keterangan:</label>
+                    <input type="text" class="form-control" id="keterangan" name="keterangan">
+                </div>
+                <div class="offset-md-3 col-md-6 mb-3">
+                    <button type="submit" class="btn btn-primary" name="submit">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
 
-                    </html>
+</html>
 
                     </table>
                 </div>

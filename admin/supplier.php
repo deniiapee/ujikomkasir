@@ -110,10 +110,10 @@ $result = mysqli_query($koneksi, $sql);
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Transaksi</h6>
-                        <a class="collapse-item" href="penjualan.php">penjualan</a>
-                        <a class="collapse-item" href="pembelian.php">pembelian</a>
-                        <a class="collapse-item" href="detail_penjualan.php">detail penjualan</a>
-                        <a class="collapse-item" href="detail_pembelian.php">detail pembelian</a>
+                        <a class="collapse-item" href="penjualan.php">Penjualan</a>
+                        <a class="collapse-item" href="pembelian.php">Pembelian</a>
+                        <a class="collapse-item" href="detail_penjualan.php">Detail penjualan</a>
+                        <a class="collapse-item" href="detail_pembelian.php">Detail pembelian</a>
         
                     </div>
                 </div>
@@ -126,7 +126,7 @@ $result = mysqli_query($koneksi, $sql);
             <li class="nav-item">
                 <a class="nav-link" href="pengguna.php">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>data user</span></a>
+                    <span>Data user</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="../Logout.php">

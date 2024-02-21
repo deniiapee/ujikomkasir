@@ -101,8 +101,8 @@ $result1 = mysqli_query($koneksi,$sql1);
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Transaksi:</h6>
-                        <a class="collapse-item" href="penjualan.php">penjualan</a>
-                        <a class="collapse-item" href="pembelian.php">pembelian</a>
+                        <a class="collapse-item" href="penjualan.php">Penjualan</a>
+                        <a class="collapse-item" href="pembelian.php">Pembelian</a>
                     </div>
                 </div>
             </li>
@@ -114,7 +114,7 @@ $result1 = mysqli_query($koneksi,$sql1);
             <li class="nav-item">
                 <a class="nav-link" href="pengguna.php">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>data user</span></a>
+                    <span>Data user</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="../Logout.php">
@@ -259,7 +259,7 @@ $result1 = mysqli_query($koneksi,$sql1);
                 <input type="text" class="form-control" id="satuan" name="satuan" required>
             </div>
             <div class="form-group">
-                <label for="harga_jual">Hargajual:</label>
+                <label for="harga_jual">Harga jual:</label>
                 <input type="number" class="form-control" id="harga_jual" name="harga_jual" required>
             </div>
             <div class="form-group">
