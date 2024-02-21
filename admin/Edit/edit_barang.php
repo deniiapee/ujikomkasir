@@ -76,8 +76,8 @@ $result2 = mysqli_query($koneksi,$sql2);
                 <input type="text" class="form-control" id="nama_produk" name="nama_produk" value="<?php echo $data['nama_produk']; ?>" required>
             </div>
             <div class="form-group">
-                <label for="harga_beli">Harga Beli:</label>
-                <input type="number" class="form-control" id="harga_beli" name="harga_beli" value="<?php echo $data['harga_beli']; ?>" required>
+                <label for="stok">stok:</label>
+                <input type="number" class="form-control" id="stok" name="stok" value="<?php echo $data['stok']; ?>" required>
             </div>
             <div class="form-group">
                 <label for="harga_jual">Harga Jual:</label>

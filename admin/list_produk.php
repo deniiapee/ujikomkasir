@@ -130,6 +130,11 @@ $result = mysqli_query($koneksi, $sql);
                     <i class="fas fa-fw fa-table"></i>
                     <span>data user</span></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="../Logout.php">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>log out</span></a>
+            </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -230,7 +235,7 @@ $result = mysqli_query($koneksi, $sql);
                                         <div class="container d-flex" style="position:relative; width:100%;">
                                              <table class="table" style="width:100%;height: 100%">
                                                 <?php 
-                                                    echo "<thead><tr><th>No</th><th>Toko</th><th>Nama Produk</th><th>Kategori</th><th>Harga Beli</th><th>Harga Jual</th><th>Satuan</th><th>Aksi</th></tr></thead>";
+                                                    echo "<thead><tr><th>No</th><th>Toko</th><th>Nama Produk</th><th>Kategori</th><th>harga jual</th><th>stok</th><th>Satuan</th><th>Aksi</th></tr></thead>";
                                                 if($result){$i=0;
                                                 while ($row = $result->fetch_assoc()){  $i++;
                                                     echo "<tr>";
@@ -238,11 +243,11 @@ $result = mysqli_query($koneksi, $sql);
                                                     echo "<td>" . $row["nama_toko"] . "</td>";
                                                     echo "<td>" . $row["nama_produk"] . "</td>";
                                                     echo "<td>" . $row["nama_kategori"] . "</td>";
-                                                    echo "<td>" . $row["harga_beli"] . "</td>";
-                                                    echo "<td>" . $row["harga_jual"] . "</td>";                                                    
+                                                    echo "<td>" . $row["harga_jual"] . "</td>";
+                                                    echo "<td>" . $row["stok"] . "</td>";                                                    
                                                     echo "<td>" . $row["satuan"] . "</td>";                                                    
                                                     echo "<td>
-                                                <a href='Edit/edit_barang.php?id=" . $row['produk_id'] . " 'class='btn btn-sm btn-primary'>Edit</a>
+                                                
                                                 <a href='Delete/delete_produk.php?id=" . $row['produk_id'] . " 'class='btn btn-sm' style='background-color:#FF4646; color:#fff'>Hapus</a>
                                             </td>";
 

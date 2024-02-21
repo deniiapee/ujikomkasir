@@ -16,6 +16,7 @@ $result1 = mysqli_query($koneksi, $sqlkategori);
 $sqlpenjualan = "SELECT * FROM penjualan";
 $result2 = mysqli_query($koneksi, $sqlpenjualan);
 
+
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +54,7 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fa-solid fa-cash-register"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">kasir</div>
+                <div class="sidebar-brand-text mx-3">admin</div>
             </a>
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
@@ -66,39 +67,52 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
             </li>
 
             <!-- Divider -->
-            
+            <hr class="sidebar-divider">
 
             <!-- Heading -->
+            <div class="sidebar-heading">
+                Menu
+            </div>
+
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
-
+                    <span>Data Master</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="pelanggan.php">Pelanggan</a>
-                        <a class="collapse-item" href="penjualan.php">penjualan</a>
-                        <a class="collapse-item" href="pembelian.php">pembelian</a>
-                        <a class="collapse-item" href="detail_penjualan.php">detail penjualan</a>
-                        <a class="collapse-item" href="detail_pembelian.php">detail pembelian
-                        
                     </div>
                 </div>
             </li>
 
             <!-- Divider -->
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
+            <hr class="sidebar-divider">
 
-            <!-- Nav Item - Tables -->
+            <!-- Nav Item - Transaksi Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Data User</span></a>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Transaksi</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Transaksi</h6>
+                        <a class="collapse-item" href="penjualan.php">penjualan</a>
+                        <a class="collapse-item" href="detail_penjualan.php">detail penjualan</a>
+                    </div>
+                </div>
             </li>
 
+            </li>
+
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+            <!-- Nav Item - Tables -->
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
@@ -125,16 +139,8 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                     </button>
 
                     <!-- Topbar Search -->
-                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+
+
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -220,18 +226,36 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2" style="width:190px;">
                                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            Stok Barang
+                                            kategori
                                         </div>
                                         <!-- Replace the content below with relevant borrowing information -->
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">Stok Barang</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">kategori</div>
+                                        <span class="info-box-number"><br><?php echo mysqli_num_rows($result) ?></br></span>
+
                                         <div class="number"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="card border-left-info shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2" style="width:190px;">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                            stock
+                                        </div>
+                                        <!-- Replace the content below with relevant borrowing information -->
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">Stock Barang</div>
+                                        <span class="info-box-number"><br><?php echo mysqli_num_rows($result) ?></br></span>
 
-
+                                        <div class="number"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Barang Terjual Card Example -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-warning shadow h-100 py-2">
@@ -243,6 +267,8 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                                         </div>
                                         <!-- Replace the content below with relevant user information -->
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">Barang Terjual</div>
+                                        <span class="info-box-number"><br><?php echo mysqli_num_rows($result) ?></br></span>
+
                                     </div>
                                     <div class="col-auto">
                                         <!-- Add any additional content (e.g., an icon) here if needed -->

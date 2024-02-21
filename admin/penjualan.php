@@ -218,6 +218,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <i class="fas fa-fw fa-table"></i>
                     <span>data user</span></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="../Logout.php">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>log out</span></a>
+            </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">

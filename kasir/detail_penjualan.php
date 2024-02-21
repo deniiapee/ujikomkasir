@@ -1,13 +1,19 @@
-<?php 
+<?php
 include '../koneksi.php';
 
 session_start();
+$sql = "SELECT penjualan.*, toko.nama_toko, produk.nama_produk ,pelanggan.*
+        FROM penjualan 
+        INNER JOIN toko ON penjualan.toko_id = toko.toko_id
+        INNER JOIN produk ON produk.produk_id = produk.produk_id
+        INNER JOIN pelanggan ON penjualan.pelanggan_id = pelanggan.pelanggan_id
+        
+        ";
+$result = mysqli_query($koneksi, $sql);
 
-$sql = "SELECT * FROM toko";
-$result = mysqli_query($koneksi,$sql);
-
-$sql1 = "SELECT * FROM produk_kategori";
-$result1 = mysqli_query($koneksi,$sql1);
+if (!$result) {
+    die("Kesalahan dalam eksekusi kueri: " . mysqli_error($koneksi));
+}
 
 ?>
 
@@ -23,17 +29,31 @@ $result1 = mysqli_query($koneksi,$sql1);
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Register Produk</title>
+    <title>Dashboard</title>
 
     <!-- Custom fonts for this template-->
     <link href="../SBAdmin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Custom styles for this template-->
     <link href="../SBAdmin/css/sb-admin-2.min.css" rel="stylesheet">
-    
+
+    <style>
+        .table thead th{
+            border-bottom:0px;
+
+        }
+        th{
+            border:2px solid #eeeeee;
+            background-color: white;
+            color: black;
+        }
+        tr, td{
+            border:2px solid #eeeeee;
+            color: black;
+        }
+    </style>
 
 </head>
 
@@ -46,7 +66,7 @@ $result1 = mysqli_query($koneksi,$sql1);
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="SBAdmin/index.php">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fa-solid fa-cash-register"></i>
                 </div>
@@ -77,15 +97,11 @@ $result1 = mysqli_query($koneksi,$sql1);
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Data Master</span>
                 </a>
-                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo"
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Data Master:</h6>
-                        <a class="collapse-item" href="toko.php">Toko</a>
-                        <a class="collapse-item" href="kategori.php">Kategori</a>
-                        <a class="collapse-item active" href="produk.php">Produk</a>
-                        <a class="collapse-item" href="pelanggan.php">Pelanggan</a>
-                        <a class="collapse-item" href="supplier.php">Supplier</a>
+                        <a class="collapse-item " href="pelanggan.php">Pelanggan</a>
                     </div>
                 </div>
             </li>
@@ -97,12 +113,13 @@ $result1 = mysqli_query($koneksi,$sql1);
                     <i class="fas fa-fw fa-wrench"></i>
                     <span>Transaksi</span>
                 </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                <div id="collapseUtilities" class="collapse show" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Transaksi:</h6>
+                        <h6 class="collapse-header">Transaksi</h6>
                         <a class="collapse-item" href="penjualan.php">penjualan</a>
-                        <a class="collapse-item" href="pembelian.php">pembelian</a>
+                        <a class="collapse-item active" href="detail_penjualan.php">detail penjualan</a>
+
                     </div>
                 </div>
             </li>
@@ -111,16 +128,6 @@ $result1 = mysqli_query($koneksi,$sql1);
             <hr class="sidebar-divider">
 
             <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="pengguna.php">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>data user</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="../Logout.php">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>log out</span></a>
-            </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -148,8 +155,6 @@ $result1 = mysqli_query($koneksi,$sql1);
                     </button>
 
                     <!-- Topbar Search -->
-                  
-
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
@@ -179,7 +184,6 @@ $result1 = mysqli_query($koneksi,$sql1);
                             <!-- Dropdown - Alerts -->
                             
 
-
                         <div class="topbar-divider d-none d-sm-block"></div>
 
                         <!-- Nav Item - User Information -->
@@ -187,12 +191,15 @@ $result1 = mysqli_query($koneksi,$sql1);
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-                                <i class="fa-solid fa-right-from-bracket"></i>
+                                <?php if(isset($_SESSION['username'])){
+                                        echo $_SESSION['username'];
+                                        }?>
+                                </span>
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="../logout.php" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item" href="logout.php" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -208,78 +215,52 @@ $result1 = mysqli_query($koneksi,$sql1);
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Produk</h1>
 
-                    <div class="row">
-
-                        <div class="col-lg-6">
-
-                    
-   <h2 class="text-center">Form Data Barang</h2>
-        <form action="../Proses/proses_tambah_barang.php" method="post">
-            <?php
-            if ($result) {
-                echo "<label for='toko'>Toko :</label>";
-                echo "<select class='form-control' name='toko' required>";
-
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $nama_toko = $row['nama_toko'];
-                    $toko_id = $row['toko_id'];
-                    echo "<option value='$toko_id'>$nama_toko</option>";
-                    }
-
-                    echo "</select>";
-                } else {
-                    echo "Gagal mengambil data";
-                }
-        ?>
-        <?php
-            if ($result1) {
-                echo "<label for='kategori'>Kategori :</label>";
-                echo "<select class='form-control' name='kategori' required>";
-                echo "<option value=''></option>";
-
-                while ($riw = mysqli_fetch_assoc($result1)) {
-                    $nama_kategori = $riw['nama_kategori'];
-                    $id = $riw['kategori_id'];
-                    echo "<option value='$id'>$nama_kategori</option>";
-                    }
-
-                    echo "</select>";
-                } else {
-                    echo "Gagal mengambil data";
-                }
-        ?>
-            <div class="form-group">
-                <label for="nama_produk">Nama Produk:</label>
-                <input type="text" class="form-control" id="nama_produk" name="nama_produk" required>
+                    <div class="table-responsive">
+                        <!-- Tabel Penjualan Detail -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>ID Penjualan</th>
+                                        <th>nama toko</th>
+                                        <th>nama produk</th>
+                                        <th>Tanggal Penjualan</th>
+                                        <th>nama Pelanggan</th>
+                                        <th>harga jual</th>
+                                        <th>harga beli</th>
+                                        <th>Sisa</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    if (mysqli_num_rows($result) > 0) {
+                                        // Output data dari setiap baris
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            echo "<tr>";
+                                            echo "<td>" . $row["penjualan_id"] . "</td>";
+                                            echo "<td>" . $row["nama_toko"] . "</td>";
+                                            echo "<td>" . $row["nama_produk"] . "</td>"; // Output nama produk
+                                            echo "<td>" . $row["tanggal_penjualan"] . "</td>";
+                                            echo "<td>" . $row["nama_pelanggan"] . "</td>";
+                                            echo "<td>" . $row["total"] . "</td>";
+                                            echo "<td>" . $row["bayar"] . "</td>";
+                                            echo "<td>" . $row["sisa"] . "</td>";
+                                            echo "</tr>";
+                                        }
+                                    } else {
+                                        echo "<tr><td colspan='7'>Tidak ada data</td></tr>";
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="harga_jual">Satuan:</label>
-                <input type="text" class="form-control" id="satuan" name="satuan" required>
-            </div>
-            <div class="form-group">
-                <label for="harga_jual">Hargajual:</label>
-                <input type="number" class="form-control" id="harga_jual" name="harga_jual" required>
-            </div>
-            <div class="form-group">
-                <label for="stoko">stok:</label>
-                <input type="number" class="form-control" id="stok" name="stok" required>
-            </div>
-            
-            <button type="submit" class="btn btn-primary">Simpan</button>
-                </form>
-      
-            </div>
-            <!-- End of Main Content -->
-
-           
-
         </div>
-        <!-- End of Content Wrapper -->
-
     </div>
-    <!-- End of Page Wrapper -->
+    <!-- End of Main Content -->
 
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
@@ -300,7 +281,7 @@ $result1 = mysqli_query($koneksi,$sql1);
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="../log.php">Logout</a>
+                    <a class="btn btn-primary" href="../logout.php">Logout</a>
                 </div>
             </div>
         </div>
