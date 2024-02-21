@@ -2,6 +2,11 @@
 include '../koneksi.php';
 
 session_start();
+$sql = "SELECT pembelian_detail.*, pembelian .no_faktur, pembelian .tanggal_pembelian, pembelian .total
+FROM pembelian_detail 
+INNER JOIN pembelian ON pembelian_detail.pembelian_id = pembelian.pembelian_id";
+$result1= mysqli_query($koneksi, $sql);
+
 
 // Pastikan ada sesi yang telah dimulai
 if (!isset($_SESSION['username'])) {
@@ -11,6 +16,15 @@ if (!isset($_SESSION['username'])) {
 
 // Inisialisasi variabel pesan
 $pesan = '';
+
+// Buat koneksi ke database menggunakan PDO
+try {
+    $pdo = new PDO("mysql:host=localhost;dbname=kasir", "root", "");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo "Koneksi ke database gagal: " . $e->getMessage();
+    exit;
+}
 
 // Proses form jika tombol submit ditekan
 if (isset($_POST['submit'])) {
@@ -256,6 +270,7 @@ if (isset($_POST['submit'])) {
                     <!-- Page Heading -->
 
 
+                    <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -350,7 +365,9 @@ if (isset($_POST['submit'])) {
     </style>
 </head>
 
-        <!-- Tampilkan tabel detail pembelian -->
+<body>
+
+    <div class="container">
         <h2>Detail Pembelian</h2>
         <table>
             <thead>
@@ -364,14 +381,39 @@ if (isset($_POST['submit'])) {
                 </tr>
             </thead>
             <tbody>
-                <!-- Data detail pembelian akan ditampilkan di sini -->
-                <!-- Gunakan PHP untuk mengambil data dari database dan menampilkan ke dalam tabel -->
+                <?php
+                // Ambil data detail pembelian dari database (ganti query sesuai kebutuhan)
+                $query = "SELECT * FROM pembelian_detail WHERE pembelian_id = :pembelian_id";
+                $stmt = $pdo->prepare($query);
+                $stmt->bindParam(':pembelian_id', $pembelian_id);
+                $stmt->execute();
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                // Cek apakah ada data
+                if ($result1) {
+                    $no = 1; // Nomor urut awal
+                    foreach ($result1 as $row) {
+                        echo "<tr>";
+                        echo "<td>" . $no++ . "</td>"; // Nomor urut
+                        echo "<td>" . $row['nama_produk'] . "</td>"; // Nama produk
+                        echo "<td>" . $row['qty'] . "</td>"; // Jumlah pembelian
+                        echo "<td>" . $row['harga_beli'] . "</td>"; // Harga beli per unit
+                        echo "<td>" . $row['total'] . "</td>"; // Subtotal (harga beli * jumlah)
+                        echo "<td>" . $row['created_at'] . "</td>"; // Waktu pembelian
+                        echo "</tr>";
+                    }
+                } else {
+                    // Tampilkan pesan jika tidak ada data detail pembelian
+                    echo "<tr><td colspan='6'>Tidak ada data detail pembelian.</td></tr>";
+                }
+                ?>
             </tbody>
         </table>
     </div>
 </body>
 
 </html>
+
 
 
     <!-- Scroll to Top Button-->

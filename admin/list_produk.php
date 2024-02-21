@@ -2,7 +2,10 @@
 include '../koneksi.php';
 
 session_start();
-$sql="SELECT produk.*, produk_kategori.nama_kategori, toko.nama_toko FROM produk INNER JOIN produk_kategori ON produk.kategori_id=produk_kategori.kategori_id INNER JOIN toko ON produk.toko_id=toko.toko_id";
+$sql="SELECT produk.*, produk_kategori.nama_kategori, toko.nama_toko 
+      FROM produk  
+      INNER JOIN produk_kategori ON produk.kategori_id=produk_kategori.kategori_id 
+      INNER JOIN toko ON produk.toko_id=toko.toko_id";
 $result = mysqli_query($koneksi, $sql);
 ?>
 
@@ -247,8 +250,8 @@ $result = mysqli_query($koneksi, $sql);
                                                     echo "<td>" . $row["stok"] . "</td>";                                                    
                                                     echo "<td>" . $row["satuan"] . "</td>";                                                    
                                                     echo "<td>
-                                                
-                                                <a href='Delete/delete_produk.php?id=" . $row['produk_id'] . " 'class='btn btn-sm' style='background-color:#FF4646; color:#fff'>Hapus</a>
+                                                    <a href='edit/edit_barang.php?id=" . $row['produk_id'] . " 'class='btn btn-sm' style='background-color: blue; color: white;'>edit</a>
+                                                    <a href='Delete/delete_produk.php?id=" . $row['produk_id'] . " 'class='btn btn-sm' style='background-color:#FF4646; color:#fff'>Hapus</a>
                                             </td>";
 
                                         echo "</tr>";
