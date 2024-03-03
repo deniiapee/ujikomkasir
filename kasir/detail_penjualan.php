@@ -128,7 +128,11 @@ if (!$result) {
             <hr class="sidebar-divider">
 
             <!-- Nav Item - Tables -->
-
+            <li class="nav-item">
+                <a class="nav-link" href="../Logout.php">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>log out</span></a>
+            </li>
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 

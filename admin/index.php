@@ -70,9 +70,7 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
             <hr class="sidebar-divider">
 
             <!-- Heading -->
-            <div class="sidebar-heading">
-                Menu
-            </div>
+           
 
 
             <!-- Nav Item - Pages Collapse Menu -->
@@ -88,9 +86,14 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                         <a class="collapse-item" href="list_produk.php">Produk</a>
                         <a class="collapse-item" href="pelanggan.php">Pelanggan</a>
                         <a class="collapse-item" href="supplier.php">Supplier</a>
+                        <a class="collapse-item" href="stock.php">stock</a>
+                        <a class="collapse-item" href="stock_keluar.php">stock keluar</a>
+
+
                     </div>
                 </div>
             </li>
+            
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -98,7 +101,7 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
             <!-- Nav Item - Transaksi Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
+                <i class="fa-solid fa-money-bill"></i>
                     <span>Transaksi</span>
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
@@ -123,12 +126,12 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
             <!-- Nav Item - Tables -->
             <li class="nav-item">
                 <a class="nav-link" href="pengguna.php">
-                    <i class="fas fa-fw fa-table"></i>
+                <i class="fa-regular fa-user"></i>
                     <span>Data User</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="../Logout.php">
-                    <i class="fas fa-fw fa-table"></i>
+                <i class="fa-solid fa-right-from-bracket"></i>
                     <span>log out</span></a>
             </li>
 

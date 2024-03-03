@@ -54,7 +54,7 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fa-solid fa-cash-register"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">admin</div>
+                <div class="sidebar-brand-text mx-3">kasir</div>
             </a>
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
@@ -70,9 +70,7 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
             <hr class="sidebar-divider">
 
             <!-- Heading -->
-            <div class="sidebar-heading">
-                Menu
-            </div>
+           
 
 
             <!-- Nav Item - Pages Collapse Menu -->
@@ -94,7 +92,7 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
             <!-- Nav Item - Transaksi Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
+                <i class="fa-solid fa-money-bill"></i>
                     <span>Transaksi</span>
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">

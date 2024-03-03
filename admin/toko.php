@@ -59,6 +59,7 @@ $result = mysqli_query($koneksi, $sql);
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fa-solid fa-cash-register"></i>
                 </div>
+                <div class="sidebar-brand-text mx-3">admin</div>
             </a>
 
             <!-- Divider -->
@@ -103,7 +104,7 @@ $result = mysqli_query($koneksi, $sql);
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
+                    <i class="fa-solid fa-money-bill"></i>
                     <span>Transaksi</span>
                 </a>
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
@@ -125,12 +126,12 @@ $result = mysqli_query($koneksi, $sql);
             <!-- Nav Item - Tables -->
             <li class="nav-item">
                 <a class="nav-link" href="pengguna.php">
-                    <i class="fas fa-fw fa-table"></i>
+                <i class="fa-regular fa-user"></i>
                     <span>data user</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="../Logout.php">
-                    <i class="fas fa-fw fa-table"></i>
+                <i class="fa-solid fa-right-from-bracket"></i>
                     <span>log out</span></a>
             </li>
 
@@ -220,7 +221,6 @@ $result = mysqli_query($koneksi, $sql);
                     <!-- Page Heading -->
                     <h1 class="h3 mb-4 text-gray-800">Data Toko</h1>
                     <a href="registrasi/registrasi_toko.php">
-                        <button type="button" class="btn btn-primary" style="margin-left:80%;margin-bottom:10px;">Tambah Toko</button>
                     </a>
 
                     <div class="row">

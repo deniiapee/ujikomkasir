@@ -6,13 +6,13 @@ session_start();
 $id = $_GET['id']; // Ambil ID barang dari URL
 
 $sql = "SELECT * FROM toko";
-$result = mysqli_query($koneksi,$sql);
+$result = mysqli_query($koneksi, $sql);
 
 $sql1 = "SELECT * FROM produk_kategori";
-$result1 = mysqli_query($koneksi,$sql1);
+$result1 = mysqli_query($koneksi, $sql1);
 
 $sql2 = "SELECT * FROM produk WHERE produk_id='$id'";
-$result2 = mysqli_query($koneksi,$sql2);
+$result2 = mysqli_query($koneksi, $sql2);
 ?>
 
 
@@ -24,6 +24,64 @@ $result2 = mysqli_query($koneksi,$sql2);
     <title>Edit Data Barang</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-5 {
+            margin-top: 5rem;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        /* Additional Styling for Select Dropdown */
+        select.form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        /* Additional Styling for Hidden Input */
+        input[type="hidden"] {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
@@ -44,12 +102,12 @@ $result2 = mysqli_query($koneksi,$sql2);
                     $nama_toko = $row['nama_toko'];
                     $toko_id = $row['toko_id'];
                     echo "<option value='$toko_id'>$nama_toko</option>";
-                    }
-
-                    echo "</select>";
-                } else {
-                    echo "Gagal mengambil data";
                 }
+
+                echo "</select>";
+            } else {
+                echo "Gagal mengambil data";
+            }
         ?>
              <?php
             if ($result1) {
@@ -60,12 +118,12 @@ $result2 = mysqli_query($koneksi,$sql2);
                     $nama_kategori = $riw['nama_kategori'];
                     $id = $riw['kategori_id'];
                     echo "<option value='$id'>$nama_kategori</option>";
-                    }
-
-                    echo "</select>";
-                } else {
-                    echo "Gagal mengambil data";
                 }
+
+                echo "</select>";
+            } else {
+                echo "Gagal mengambil data";
+            }
         ?>
         <?php
         $data = mysqli_fetch_assoc($result2);
@@ -74,10 +132,6 @@ $result2 = mysqli_query($koneksi,$sql2);
             <div class="form-group">
                 <label for="nama_produk">Nama Produk:</label>
                 <input type="text" class="form-control" id="nama_produk" name="nama_produk" value="<?php echo $data['nama_produk']; ?>" required>
-            </div>
-            <div class="form-group">
-                <label for="stok">stok:</label>
-                <input type="number" class="form-control" id="stok" name="stok" value="<?php echo $data['stok']; ?>" required>
             </div>
             <div class="form-group">
                 <label for="harga_jual">Harga Jual:</label>

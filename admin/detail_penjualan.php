@@ -70,6 +70,7 @@ if (!$result) {
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fa-solid fa-cash-register"></i>
                 </div>
+                <div class="sidebar-brand-text mx-3">admin</div>
             </a>
 
             <!-- Divider -->
@@ -115,7 +116,7 @@ if (!$result) {
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
+                    <i class="fa-solid fa-money-bill"></i>
                     <span>Transaksi</span>
                 </a>
                 <div id="collapseUtilities" class="collapse show" aria-labelledby="headingUtilities"
@@ -137,12 +138,12 @@ if (!$result) {
             <!-- Nav Item - Tables -->
             <li class="nav-item">
                 <a class="nav-link" href="pengguna.php">
-                    <i class="fas fa-fw fa-table"></i>
+                <i class="fa-regular fa-user"></i>
                     <span>Data user</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="../Logout.php">
-                    <i class="fas fa-fw fa-table"></i>
+                <i class="fa-solid fa-right-from-bracket"></i>
                     <span>log out</span></a>
             </li>
 

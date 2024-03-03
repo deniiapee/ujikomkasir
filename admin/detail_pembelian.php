@@ -2,9 +2,11 @@
 include '../koneksi.php';
 
 session_start();
-$sql = "SELECT pembelian_detail.*, pembelian .no_faktur, pembelian .tanggal_pembelian, pembelian .total
+$sql = "SELECT pembelian_detail., pembelian .no_faktur, pembelian .tanggal_pembelian, pembelian .total,produk.
 FROM pembelian_detail 
-INNER JOIN pembelian ON pembelian_detail.pembelian_id = pembelian.pembelian_id";
+INNER JOIN pembelian ON pembelian_detail.pembelian_id = pembelian.pembelian_id
+INNER JOIN produk ON pembelian_detail.produk_id = produk.produk_id
+";
 $result1= mysqli_query($koneksi, $sql);
 
 
@@ -151,14 +153,13 @@ if (isset($_POST['submit'])) {
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
+                    <i class="fa-solid fa-money-bill"></i>
                     <span>Transaksi</span>
                 </a>
                 <div id="collapseUtilities" class="collapse show" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Transaksi</h6>
-                        <a class="collapse-item" href="penjualan.php">Penjualan</a>
                         <a class="collapse-item" href="pembelian.php">Pembelian</a>
                         <a class="collapse-item" href="detail_penjualan.php">Detail Penjualan</a>
                         <a class="collapse-item active" href="detail_pembelian.php">Detail Pembelian</a>
@@ -173,12 +174,12 @@ if (isset($_POST['submit'])) {
             <!-- Nav Item - Tables -->
             <li class="nav-item">
                 <a class="nav-link" href="pengguna.php">
-                    <i class="fas fa-fw fa-table"></i>
+                <i class="fa-regular fa-user"></i>
                     <span>Data user</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="../Logout.php">
-                    <i class="fas fa-fw fa-table"></i>
+                <i class="fa-solid fa-right-from-bracket"></i>
                     <span>log out</span></a>
             </li>
 

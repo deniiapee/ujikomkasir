@@ -87,13 +87,17 @@ session_start();
                                                 }
 
                                                 // Login Petugas
-                                                elseif ($data['role'] == 'kasir') { // Perhatikan perbedaan kapitalisasi di sini
+                                                elseif ($data['role'] == 'kasir') {
                                                     $_SESSION['user_id'] = $data['user_id'];
                                                     $_SESSION['nama_lengkap'] = $data['nama_lengkap'];
                                                     $_SESSION['role'] = $data['role'];
                                                     header('location: kasir/index.php');
                                                     exit; // Penting untuk menghentikan eksekusi script setelah melakukan redirect
                                                 }
+
+                                                // Tambahkan notifikasi berhasil login bersama dengan kode unik
+                                                $unique_code = uniqid(); // Menghasilkan kode unik
+                                                echo "<script>alert('Berhasil Login. Kode Anda: $unique_code');</script>";
                                             } else {
                                                 echo "Username dan password salah";
                                             }
@@ -108,7 +112,7 @@ session_start();
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                                                 </div>
-                                                <input type="text" class="form-koneksirol form-control-user" name="username" placeholder="Enter Username...">
+                                                <input type="text" class="form-control form-control-user" name="username" placeholder="Enter Username...">
                                             </div>
                                         </div>
                                         <div class="form-group">
