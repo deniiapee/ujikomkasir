@@ -50,8 +50,8 @@ $result = mysqli_query($koneksi,$sql);
                 <input type="text" class="form-control" id="alamat" name="toko_id" value="<?php echo $data['toko_id']; ?>" required>
             </div>
             <div class="form-group">
-                <label for="no_hp">NO HP:</label>
-                <input type="number" class="form-control" id="no_hp" name="no_hp" value="<?php echo $data['no_hp']; ?>" required>
+                <label for="tlp_hp">NO HP:</label>
+                <input type="number" class="form-control" id="tlp_hp" name="no_hp" value="<?php echo $data['tlp_hp']; ?>" required>
             </div>
             <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
         </form>

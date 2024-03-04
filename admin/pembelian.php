@@ -1,4 +1,4 @@
-<?php
+ <?php
 include '../koneksi.php';
 session_start();
 // Inisialisasi data pembelian
@@ -46,7 +46,7 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Jika data pembelian sudah ada dalam formulir POST, gunakan data tersebut
+// Setelah validasi data POST, simpan data pembelian ke dalam database
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Tangani data POST
     $pembelianToAdd = [
@@ -62,19 +62,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'keterangan' => $_POST['keterangan'],
         'created_at' => $_POST['createdAt'],
     ];
+
+    // Simpan data ke dalam database
+    // Code untuk menyimpan data ke database di sini
+    // Pastikan untuk mengganti bagian ini dengan logika penyimpanan ke database sesuai dengan struktur tabel Anda
 }
 
-// Tutup koneksi
+// Tutup conn
 $koneksi->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Pembelian</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Pembelian Barang</title>
     <style>
         body {
             display: flex;
@@ -91,6 +99,9 @@ $koneksi->close();
             border: 1px solid #ccc;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .wrapper{
+        width:100%;
         }
 
         label {
@@ -216,13 +227,18 @@ $koneksi->close();
             transform: rotate(45deg);
         }
     </style>
+   
 </head>
 
-<body>
+<body id="page-top">
+
+       <!-- Page Wrapper -->
+    
+
     <div style='display:flex;flex-direction:row;'>
 
         <div id="formContainer">
-            <h2>Tambah Pembelian</h2>
+            <h2 class="">Tambah Pembelian</h2>
 
             <form id="formTambahPembelian" method="post" action="detail_pembelian.php">
 
@@ -246,7 +262,7 @@ $koneksi->close();
                 <input type="date" id="tanggalPembelian" name="tanggalPembelian" value="<?= $pembelianToAdd['tanggal_pembelian'] ?>" required>
 
                 <label for="suplierId">Nama Supplier:</label>
-                <select id="suplierId" name="suplierId" required onchange="showProducts()">
+                <select  name="suplierId" id='id_suplier' required >
                     <option value="">Pilih Supplier</option>
                     <?= $supplierOptions ?>
                 </select>
@@ -285,14 +301,9 @@ $koneksi->close();
                         <th>Pilih</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>Ekonomi</td>
-                        <td>Rp. 20.000</td>
-                        <td><input type="number" id="qtyEkonomi" name="qtyEkonomi" min="0" style="width:60px;" oninput="hitungSisa()"></td>
-                        <td><input type="checkbox" class="selectProduct" id="chkEkonomi" name="selectProduct[]" value="Ekonomi" onchange="updateQty(this)"></td>
-                    </tr>
-                    <tr>
+                <tbody id='tbody'>
+                    
+                    <!-- <tr>
                         <td>Kopi</td>
                         <td>Rp. 25.000</td>
                         <td><input type="number" id="qtyKopi" name="qtyKopi" min="0" style="width:60px;" oninput="hitungSisa()"></td>
@@ -303,13 +314,14 @@ $koneksi->close();
                         <td>Rp. 20.000</td>
                         <td><input type="number" id="qtyNabati" name="qtyNabati" min="0" style="width:60px;" oninput="hitungSisa()"></td>
                         <td><input type="checkbox" class="selectProduct" id="chkNabati" name="selectProduct[]" value="Nabati" onchange="updateQty(this)"></td>
-                    </tr>
+                    </tr> -->
                 </tbody>
             </table>
             <br>
             
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
         // Fungsi untuk menghitung total pembelian dan memperbarui input tersembunyi
@@ -335,13 +347,13 @@ $koneksi->close();
         // Fungsi untuk mendapatkan harga produk berdasarkan namanya
         function getProductPrice(productName) {
             // Harga barang (di sini diimplementasikan secara statis, Anda dapat memodifikasi agar sesuai dengan kebutuhan Anda)
-            const hargaBarang = {
+            const harga_jual = {
                 "Ekonomi": 20000,
                 "Kopi": 25000,
                 "Nabati": 20000
             };
 
-            return hargaBarang[productName] || 0; // Kembalikan harga produk, jika tidak ada, kembalikan 0
+            return harga_jual[productName] || 0; // Kembalikan harga produk, jika tidak ada, kembalikan 0
         }
 
         // Fungsi untuk menghitung sisa pembayaran dan memperbarui input tersembunyi
@@ -418,14 +430,58 @@ $koneksi->close();
                     alert('Pembelian berhasil. Total yang harus dibayar: Rp. ' + total.toFixed(2) + '. Sisa: Rp. ' + sisa.toFixed(2));
                 } else {
                     // Jika pembayaran tidak mencukupi
-                    alert('Pembayaran tidak mencukupi. Total yang harus dibayar: Rp. ' + total.toFixed(2) + '. Silakan lakukan pembayaran yang cukup.');
+                    alert('Pembayaran tidak mencukupi. Total yang harus dibayar: Rp. ' + total.toFixed(2) + '. Silakan periksa kembali pembayaran Anda.');
                 }
             } else {
-                // Jika terjadi kesalahan
-                alert('Terjadi kesalahan. Mohon periksa kembali input.');
+                // Jika jumlah barang yang dibeli tidak valid
+                alert('Mohon masukkan jumlah barang yang dibeli.');
             }
         }
+
+        $(document).ready(function(){
+            // Event listener untuk perubahan nilai pada elemen select nama supplier
+            $('#id_suplier').change(function(){
+                var suplierId = $(this).val(); // Ambil nilai ID supplier yang dipilih
+                
+                if(suplierId != ''){
+                    // Kirim permintaan Ajax ke file PHP untuk mendapatkan produk berdasarkan supplier yang dipilih
+                    $.ajax({
+                        url: 'getproduksuplier.php',
+                        type: 'post',
+                        data: {id_suplier: suplierId},
+                        success:function(response){
+                            // Perbarui tampilan produk di halaman HTML dengan respons dari permintaan Ajax
+                            $('#tbody').html(response);
+                        }
+                    });
+                }else{
+                    // Kosongkan kontainer produk jika tidak ada supplier yang dipilih
+                    $('#tbody').html('');
+                }
+            });
+});
+
+
     </script>
+
+    <!-- Bootstrap core JavaScript-->
+  
+    <script src="../SBAdmin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="../SBAdmin/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="../SBAdmin/js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="../SBAdmin/vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="../SBAdmin/js/demo/chart-area-demo.js"></script>
+    <script src="../SBAdmin/js/demo/chart-pie-demo.js"></script>
+
+    <!-- Additional custom scripts or scripts for handling data tables can be added here -->
 
 </body>
 

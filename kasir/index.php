@@ -99,7 +99,7 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Transaksi</h6>
                         <a class="collapse-item" href="penjualan.php">penjualan</a>
-                        <a class="collapse-item" href="detail_penjualan.php">detail penjualan</a>
+                        <a class="collapse-item" href="tabel_penjualan.php">tabel penjualan</a>
                     </div>
                 </div>
             </li>
@@ -111,6 +111,12 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
             <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                    <a class="nav-link" href="../Logout.php">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>log out</span></a>
+                </li>
+
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
@@ -136,6 +142,7 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                         <i class="fa fa-bars"></i>
                     </button>
 
+                    <!-- Topbar Search -->
                     <!-- Topbar Search -->
 
 
@@ -201,7 +208,7 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                 <div class="row mx-auto col-lg-auto" style="width:1000px;">
 
                     <!-- Barang Card Example -->
-                    <div class="col-xl-4 col-md-6 mb-4">
+                    <div class="col-lg-3 mb-4">
                         <div class="card border-left-success shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
@@ -218,7 +225,7 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                     </div>
 
                     <!-- Stok Barang Card Example -->
-                    <div class="col-xl-4 col-md-6 mb-4">
+                    <div class="col-lg-3 mb-4">
                         <div class="card border-left-info shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
@@ -236,7 +243,7 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-md-6 mb-4">
+                    <div class="col-lg-3 mb-4">
                         <div class="card border-left-info shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
@@ -255,7 +262,7 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                         </div>
                     </div>
                     <!-- Barang Terjual Card Example -->
-                    <div class="col-xl-4 col-md-6 mb-4">
+                    <div class="col-lg-3 mb-4">
                         <div class="card border-left-warning shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">

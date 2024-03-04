@@ -139,7 +139,7 @@ $result2 = mysqli_query($koneksi, $sql2);
             </div>
             <div class="form-group">
                 <label for="harga_jual">Satuan:</label>
-                <input type="number" class="form-control" id="satuan" name="satuan" value="<?php echo $data['Satuan']; ?>" required>
+                <input type="text" class="form-control" id="satuan" name="satuan" value="<?php echo $data['satuan']; ?>" required>
             </div>
             <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
         </form>

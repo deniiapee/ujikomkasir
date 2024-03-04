@@ -2,9 +2,10 @@
 include '../koneksi.php';
 
 session_start();
-$sql="SELECT produk.*, produk_kategori.nama_kategori, toko.nama_toko 
+$sql="SELECT produk.*, produk_kategori.nama_kategori, toko.nama_toko, suplier.nama_suplier
       FROM produk  
-      INNER JOIN produk_kategori ON produk.kategori_id=produk_kategori.kategori_id 
+      INNER JOIN produk_kategori ON produk.kategori_id=produk_kategori.kategori_id
+      INNER JOIN suplier ON produk.suplier_id = suplier.suplier_id   
       INNER JOIN toko ON produk.toko_id=toko.toko_id";
 $result = mysqli_query($koneksi, $sql);
 ?>
@@ -116,7 +117,6 @@ $result = mysqli_query($koneksi, $sql);
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Transaksi</h6>
-                        <a class="collapse-item" href="penjualan.php">Penjualan</a>
                         <a class="collapse-item" href="pembelian.php">Pembelian</a>
                         <a class="collapse-item" href="detail_penjualan.php">Detail penjualan</a>
                         <a class="collapse-item" href="detail_pembelian.php">Detail pembelian</a>
@@ -234,12 +234,12 @@ $result = mysqli_query($koneksi, $sql);
                         <div class="col-lg-6">
                         <div class="table-container">
                             <div class="container" style="width:100%; ">
-                                <div class="table-container d-flex" style="width:180%; position:absolute; left:40px;">
-                                    <div class="content shadow p-3 mb-5 bg-body-tertiary rounded" style="width:100%;height: 400px;; background-color:white;">
+                                <div class="table-container d-flex" style="width:200%; position:absolute; left:100px;">
+                                    <div class="content shadow p-3 mb-5 bg-body-tertiary rounded" style="width:100%;height:auto; background-color:white; position:relative; left:-100px;">
                                         <div class="container d-flex" style="position:relative; width:100%;">
                                              <table class="table" style="width:100%;height: 100%">
                                                 <?php 
-                                                    echo "<thead><tr><th>No</th><th>Toko</th><th>Nama Produk</th><th>Kategori</th><th>harga jual</th><th>stok</th><th>Satuan</th><th>Aksi</th></tr></thead>";
+                                                    echo "<thead><tr><th>No</th><th>Toko</th><th>Nama Produk</th><th>Kategori</th><th>nama suplier</th><th>harga jual</th><th>stok</th><th>Satuan</th><th>Aksi</th></tr></thead>";
                                                 if($result){$i=0;
                                                 while ($row = $result->fetch_assoc()){  $i++;
                                                     echo "<tr>";
@@ -247,6 +247,7 @@ $result = mysqli_query($koneksi, $sql);
                                                     echo "<td>" . $row["nama_toko"] . "</td>";
                                                     echo "<td>" . $row["nama_produk"] . "</td>";
                                                     echo "<td>" . $row["nama_kategori"] . "</td>";
+                                                    echo "<td>" . $row["nama_suplier"] . "</td>";
                                                     echo "<td>" . $row["harga_jual"] . "</td>";
                                                     echo "<td>" . $row["stock"] . "</td>";                                                    
                                                     echo "<td>" . $row["satuan"] . "</td>";                                                    
@@ -254,7 +255,6 @@ $result = mysqli_query($koneksi, $sql);
                                                     <a href='edit/edit_barang.php?id=" . $row['produk_id'] . " 'class='btn btn-sm' style='background-color: blue; color: white;'>edit</a>
                                                     <a href='Delete/delete_produk.php?id=" . $row['produk_id'] . " 'class='btn btn-sm' style='background-color:#FF4646; color:#fff'>Hapus</a>
                                             </td>";
-
                                         echo "</tr>";
                                     }
                                 echo "</tbody></table>";
@@ -262,14 +262,12 @@ $result = mysqli_query($koneksi, $sql);
               echo "Data tidak ditemukan";
             }
         ?>
-                                            </table>
+          </table>
     </div>
-                                     </div>
-                             </div>
-    
-    
-                            </div>
-                        </div>
+              </div>
+                </div>
+                    </div>
+                      </div>
                 </div>
             <!-- End of Main Content -->
 

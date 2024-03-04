@@ -13,6 +13,7 @@ $result3 = mysqli_query($koneksi, $sql);
 
 
 
+
 session_start();
 if ($_SESSION["username"]){
     $username = $_SESSION["username"];
@@ -33,63 +34,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $tanggal_penjualan = date("Y-m-d H:i:s");
 
     // Retrieve selected product IDs
-    if(isset($_POST['produk_id'])) {
-        foreach($_POST['produk_id'] as $produk_id) {
-            // Ambil harga beli dari produk yang dipilih
-            $harga_beli = $POST["harga_beli$produk_id"];
-            // Lakukan apa yang perlu dilakukan dengan harga beli (simpan di database, dll)
-        }
-    } 
-
-    // Retrieve selected product IDs
-$selected_products = isset($_POST['barang']) ? $_POST['barang'] : array();
-exit();
-foreach($selected_products as $produk_id) {
-
-    // Koneksi ke database menggunakan MySQLi
-    $mysqli = new mysqli("localhost", "root", "", "kasir");
-
-    // Periksa koneksi
-    if ($mysqli->connect_error) {
-        die("Connection failed: " . $mysqli->connect_error);
-    }
-
-    // Mendapatkan stok saat ini dari produk
-    $sql = "SELECT stok FROM produk WHERE id = ?";
-    $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param("i", $produk_id);
-    $stmt->execute();
-    $stmt->store_result();
+    if (isset($_POST['barang']) && is_array($_POST['barang'])) {
+        $selected_products = $_POST['barang'];
     
-    if ($stmt->num_rows > 0) {
-        $stmt->bind_result($stok_sekarang);
-        $stmt->fetch();
-
-        // Update jumlah stok
-        $stok_sekarang -= 1;
-
-        // Update stok di database
-        $sql_update = "UPDATE produk SET stok = ? WHERE id = ?";
-        $stmt_update = $mysqli->prepare($sql_update);
-        $stmt_update->bind_param("ii", $stok_sekarang, $produk_id);
-        $stmt_update->execute();
+        // Koneksi ke database menggunakan MySQLi
+        $mysqli = new mysqli("localhost", "root", "", "kasir");
+    
+        // Periksa koneksi
+        if ($mysqli->connect_error) {
+            die("Connection failed: " . $mysqli->connect_error);
+        }
+    
+        // Inisialisasi statement update di luar loop foreach
+        $stmt_update = $mysqli->prepare("UPDATE produk SET stock = stock - ? WHERE produk_id = ?");
+    
+        foreach ($selected_products as $produk_info) {
+            // Memisahkan nilai ID barang dan qty
+            list($produk_id, $qty) = explode('|', $produk_info);
+    
+            // Eksekusi statement update di dalam loop
+            $stmt_update->bind_param("ii", $qty, $produk_id);
+            $stmt_update->execute();
+    
+            // Periksa apakah query berhasil dieksekusi
+            if ($stmt_update->affected_rows <= 0) {
+                echo "Gagal memperbarui stok untuk produk dengan ID $produk_id";
+            }
+        }
+    
+        // Tutup statement dan koneksi
+        $stmt_update->close();
+        $mysqli->close();
+    } else {
+        echo "No products selected.";
     }
-
-    // Tutup statement dan koneksi
-    $stmt->close();
-    $mysqli->close();
-}
-
+    
 
     // Simpan data ke database menggunakan PDO
     try {
         $pdo = new PDO("mysql:host=localhost;dbname=kasir", "root", "");
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Begin a transaction
+        // Memulai transaksi
         $pdo->beginTransaction();
 
-        // Masukkan data penjualan ke tabel penjualan
+        // Memasukkan data penjualan ke tabel penjualan
         $sql = "INSERT INTO penjualan (toko_id, user_id, tanggal_penjualan, pelanggan_id, total, bayar, sisa, keterangan, created_at)
                 VALUES (:toko_id, :user_id, :tanggal_penjualan, :pelanggan_id, :total, :bayar, :sisa, :keterangan, :created_at)";
         $stmt = $pdo->prepare($sql);
@@ -105,15 +94,52 @@ foreach($selected_products as $produk_id) {
             ':created_at' => $create
         ));
 
-        // Ambil penjualan_id dari baris yang dimasukkan
+        // Mendapatkan id penjualan dari baris yang dimasukkan
         $penjualan_id = $pdo->lastInsertId();
 
-        // Masukkan data ke tabel penjualan_detail
-        // Commit transaksi
+        // Memasukkan data detail penjualan ke tabel penjualan_detail
+        if(isset($_POST['barang'])) {
+            foreach($_POST['barang'] as $produk_id) {
+                list($produk, $qtys) = explode('|', $produk_id);
+                $produk_id = $produk;
+                $qty = $qtys; // Mengambil nilai qty dari form
+                $harga_beli = $_POST["harga_beli$produk_id"]; // Mengambil nilai harga beli dari form
+        
+                // Menggunakan prepared statement untuk mengambil harga_jual dari database
+                $query_harga_jual = "SELECT harga_jual FROM produk WHERE produk_id = :produk_id";
+                $stmt_harga_jual = $pdo->prepare($query_harga_jual);
+                $stmt_harga_jual->bindParam(':produk_id', $produk_id, PDO::PARAM_INT);
+                $stmt_harga_jual->execute();
+        
+                // Mengambil hasil query
+                $harga_jual_result = $stmt_harga_jual->fetch(PDO::FETCH_ASSOC);
+        
+                if ($harga_jual_result) {
+                    $harga_jual = $qty * $harga_jual_result['harga_jual'];
+        
+                    // Lakukan INSERT ke tabel penjualan_detail
+                    $sql = "INSERT INTO penjualan_detail (penjualan_id, produk_id, qty, harga_beli, harga_jual, created_at)
+                            VALUES (:penjualan_id, :produk_id, :qty, :harga_beli, :harga_jual, :created_at)";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute(array(
+                        ':penjualan_id' => $penjualan_id,
+                        ':produk_id' => $produk_id,
+                        ':qty' => $qty,
+                        ':harga_beli' => $harga_beli,
+                        ':harga_jual' => $harga_jual,
+                        ':created_at' => $create
+                    ));
+                } else {
+                    // Produk tidak ditemukan, handle sesuai kebutuhan Anda
+                    echo "Produk dengan ID $produk_id tidak ditemukan.";
+                }
+            }
+        }
+
         $pdo->commit();
 
-        // Redirect ke halaman sukses atau tampilkan pesan sukses
-        header("Location: detail_penjualan.php");
+        // Redirect ke halaman penjualan_detail.php setelah penyimpanan berhasil
+        header("Location: tabel_penjualan.php");
         exit();
     } catch (PDOException $e) {
         // Rollback transaksi jika terjadi kesalahan
@@ -121,206 +147,193 @@ foreach($selected_products as $produk_id) {
         echo "Error: " . $e->getMessage();
     }
 
-    // Tutup koneksi database
+    // Menutup koneksi database
     $pdo = null;
 }
 ?>
+
+
 <!DOCTYPE html>
-<html lang="en">
+    <html lang="en">
 
-<head>
+    <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
 
-    <title>Dashboard</title>
+        <title>Dashboard</title>
 
-    <!-- Custom fonts for this template-->
-    <link href="../SBAdmin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Custom styles for this template-->
-    <link href="../SBAdmin/css/sb-admin-2.min.css" rel="stylesheet">
+        <!-- Custom fonts for this template-->
+        <link href="../SBAdmin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <!-- Custom styles for this template-->
+        <link href="../SBAdmin/css/sb-admin-2.min.css" rel="stylesheet">
 
-</head>
+    </head>
 
-<body id="page-top">
+    <body id="page-top">
 
-    <!-- Page Wrapper -->
-    <div id="wrapper">
+        <!-- Page Wrapper -->
+        <div id="wrapper">
 
-        <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <!-- Sidebar -->
+            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fa-solid fa-cash-register"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">kasir</div>
-            </a>
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="index.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-           
-
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Data Master</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="pelanggan.php">Pelanggan</a>
+                <!-- Sidebar - Brand -->
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
+                    <div class="sidebar-brand-icon rotate-n-15">
+                        <i class="fa-solid fa-cash-register"></i>
                     </div>
-                </div>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Nav Item - Transaksi Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-                <i class="fa-solid fa-money-bill"></i>
-                    <span>Transaksi</span>
+                    <div class="sidebar-brand-text mx-3">kasir</div>
                 </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Transaksi</h6>
-                        <a class="collapse-item" href="penjualan.php">Penjualan</a>
-                        <a class="collapse-item" href="detail_penjualan.php">Detail penjualan</a>
+                <!-- Divider -->
+                <hr class="sidebar-divider my-0">
 
+                <!-- Nav Item - Dashboard -->
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.php">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>Dashboard</span></a>
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+
+                <!-- Heading -->
+            
+
+
+                <!-- Nav Item - Pages Collapse Menu -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                        <i class="fas fa-fw fa-cog"></i>
+                        <span>Data Master</span>
+                    </a>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="pelanggan.php">Pelanggan</a>
+                        </div>
                     </div>
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+
+                <!-- Nav Item - Transaksi Collapse Menu -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fa-solid fa-money-bill"></i>
+                        <span>Transaksi</span>
+                    </a>
+                    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Transaksi</h6>
+                            <a class="collapse-item" href="penjualan.php">Penjualan</a>
+                            <a class="collapse-item" href="tabel_penjualan.php">tabel penjualan</a>
+
+                        </div>
+                    </div>
+                </li>
+
+                </li>
+
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
+
+                <!-- Nav Item - Tables -->
+               
+                <li class="nav-item">
+                    <a class="nav-link" href="../Logout.php">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>log out</span></a>
+                </li>
+
+                <!-- Sidebar Toggler (Sidebar) -->
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
                 </div>
-            </li>
-
-            </li>
-
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <!-- Nav Item - Tables -->
-           
-            <li class="nav-item">
-                <a class="nav-link" href="../Logout.php">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>log out</span></a>
-            </li>
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
 
 
 
-        </ul>
+            </ul>
 
-        <!-- End of Sidebar -->
+            <!-- End of Sidebar -->
 
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
 
-            <!-- Main Content -->
-            <div id="content">
+                <!-- Main Content -->
+                <div id="content">
 
-                <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <!-- Topbar -->
+                    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
+                        <!-- Sidebar Toggle (Topbar) -->
+                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                            <i class="fa fa-bars"></i>
+                        </button>
 
-                    <!-- Topbar Search -->
+                        <!-- Topbar Search -->
 
 
 
-                    <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
+                        <!-- Topbar Navbar -->
+                        <ul class="navbar-nav ml-auto">
 
-                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-                        <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-search fa-fw"></i>
-                            </a>
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
-                                <form class="form-inline mr-auto w-100 navbar-search">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary" type="button">
-                                                <i class="fas fa-search fa-sm"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </li>
-                        <!-- Dropdown - Alerts -->
-
-                        <div class="topbar-divider d-none d-sm-block"></div>
-
-                        <!-- Nav Item - User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class='mr-2 d-none d-lg-inline text-gray-600 small'>
-                                    <i class="fa-solid fa-right-from-bracket"></i>
-                            </a>
-                            <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="Logout.php" data-toggle="modal" data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
+                            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                            <li class="nav-item dropdown no-arrow d-sm-none">
+                                <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-search fa-fw"></i>
                                 </a>
-                            </div>
-                        </li>
+                                <!-- Dropdown - Messages -->
+                                <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                                    <form class="form-inline mr-auto w-100 navbar-search">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary" type="button">
+                                                    <i class="fas fa-search fa-sm"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                            <!-- Dropdown - Alerts -->
 
-                    </ul>
-                </nav>
+                            <div class="topbar-divider d-none d-sm-block"></div>
+
+                            <!-- Nav Item - User Information -->
+                            <li class="nav-item dropdown no-arrow">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class='mr-2 d-none d-lg-inline text-gray-600 small'>
+                                        <i class="fa-solid fa-right-from-bracket"></i>
+                                </a>
+                                <!-- Dropdown - User Information -->
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                    <a class="dropdown-item" href="Logout.php" data-toggle="modal" data-target="#logoutModal">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Logout
+                                    </a>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </nav>
 
 
-        <!-- End of Sidebar -->
+            <!-- End of Sidebar -->
 
-        <!-- Content Wrapper -->
+            <!-- Content Wrapper -->
 
-        
-        <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
-            <div id="content">
-
-                <!-- Topbar -->
-
-            <!-- Sidebar Toggle (Topbar) -->
-            <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                <i class="fa fa-bars"></i>
-            </button>
-
-    <!-- Topbar Navbar -->
-   
-
-</nav>
+            
+           
     <!-- content -->
     <div class="container text">
         <h2 class="text-center" style="font-weight: bold">PENJUALAN</h2>
@@ -374,7 +387,7 @@ foreach($selected_products as $produk_id) {
                                     $nama_produk = $row['nama_produk'];
                                     $id = $row['produk_id'];
                                     $harga = $row['harga_jual'];
-                                    $stok = $row['stock'];
+                                    $stock = $row['stock'];
                         ?>
                                     <div class="dropdown-item" data-id="<?php echo $id; ?>" data-harga="<?php echo $harga; ?>" data-stok='<?php echo $stok; ?>'>
                                         <?php echo $nama_produk; ?>
@@ -437,7 +450,7 @@ foreach($selected_products as $produk_id) {
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="../login.php">Logout</a>
+                    <a class="btn btn-primary" href="../logout.php">Logout</a>
                 </div>
             </div>
         </div>
@@ -495,10 +508,24 @@ foreach($selected_products as $produk_id) {
         var stokBarang = parseInt(clickedElement.getAttribute('data-stok'));
         var idBarang = parseInt(clickedElement.getAttribute('data-id')); // Mengambil ID barang dari atribut data-id
 
+        var qty = prompt("Masukkan jumlah barang untuk " + namaBarang + ":");
+        if (qty === null || qty.trim() === "") {
+            return; // Jika pengguna membatalkan atau tidak memasukkan jumlah, keluar dari fungsi
+        }
+
+        // Konversi qty menjadi bilangan bulat
+        qty = parseInt(qty);
+
+        // Validasi qty
+        if (isNaN(qty) || qty <= 0) {
+            alert("Jumlah barang tidak valid.");
+            return; // Jika jumlah barang tidak valid, keluar dari fungsi
+        }
+
         var ulElement = document.getElementById('daftarBarang');
         var liElement = document.createElement('li');
         // Tambahkan teks dengan informasi barang ke dalam elemen <li>
-        liElement.textContent = namaBarang + ' - Rp' + hargaBarang.toFixed(2) + ' - Stok: ' + stokBarang;
+        liElement.textContent = namaBarang + ' - Qty: ' + qty + ' - Rp' + hargaBarang.toFixed(2) + ' - Stok: ' + stokBarang;
 
         // Menambahkan atribut data-harga dan data-stok ke elemen <li>
         liElement.setAttribute('data-harga', hargaBarang);
@@ -510,10 +537,11 @@ foreach($selected_products as $produk_id) {
         // Buat input checkbox
         var checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        checkbox.value = idBarang; // Menggunakan ID barang sebagai nilai checkbox
+        checkbox.value = idBarang + '|' + qty; // Menggunakan ID barang sebagai nilai checkbox
         checkbox.checked = true; 
         checkbox.style.display = 'none';
-        checkbox.name = 'barang'; 
+        checkbox.name = 'barang[]'; 
+        checkbox.setAttribute('data-qty', qty);
 
         // Tambahkan input checkbox ke dalam elemen <li>
         liElement.appendChild(checkbox);

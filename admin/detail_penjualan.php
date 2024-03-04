@@ -123,7 +123,6 @@ if (!$result) {
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Transaksi</h6>
-                        <a class="collapse-item" href="penjualan.php">Penjualan</a>
                         <a class="collapse-item" href="pembelian.php">Pembelian</a>
                         <a class="collapse-item active" href="detail_penjualan.php">Detail penjualan</a>
                         <a class="collapse-item" href="detail_pembelian.php">Detail pembelian</a>

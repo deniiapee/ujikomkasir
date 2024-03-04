@@ -8,9 +8,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nama_produk = $_POST["nama_produk"];
     $kategori = $_POST["kategori"];
     $harga_jual = $_POST["harga_jual"];
-    $stok = $_POST["stok"];
+    $stock = $_POST["stock"];
     $satuan = $_POST['satuan'];
-    $updateSql = mysqli_query($koneksi,"UPDATE produk SET toko_id = '$toko_id', nama_produk = '$nama_produk', kategori_id = '$kategori', harga_jual = '$harga_jual', stok = '$stok', satuan=' $satuan'  WHERE produk_id = '$user'");
+    $updateSql = mysqli_query($koneksi,"UPDATE produk SET toko_id = '$toko_id', nama_produk = '$nama_produk', kategori_id = '$kategori', harga_jual = '$harga_jual', stock = '$stock', satuan=' $satuan'  WHERE produk_id = '$user'");
 
     //var_dump($koneksi);
     // Lakukan proses penyimpanan ke database (misalnya)

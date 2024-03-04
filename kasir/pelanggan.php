@@ -60,6 +60,8 @@ $result = mysqli_query($koneksi, $sql);
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fa-solid fa-cash-register"></i>
                 </div>
+                <div class="sidebar-brand-text mx-3">kasir</div>
+
             </a>
 
             <!-- Divider -->
@@ -100,7 +102,7 @@ $result = mysqli_query($koneksi, $sql);
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Transaksi</h6>
                         <a class="collapse-item" href="penjualan.php">penjualan</a>
-                        <a class="collapse-item" href="detail_penjualan.php">detail penjualan</a>
+                        <a class="collapse-item" href="tabel_penjualan.php">tabel penjualan</a>
                     </div>
                 </div>
             </li>
@@ -109,6 +111,12 @@ $result = mysqli_query($koneksi, $sql);
             <hr class="sidebar-divider">
 
             <!-- Nav Item - Tables -->
+            
+            <li class="nav-item">
+                    <a class="nav-link" href="Logout.php">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>log out</span></a>
+                </li>
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
