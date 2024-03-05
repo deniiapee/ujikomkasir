@@ -1,4 +1,4 @@
- <?php
+<?php
 include '../koneksi.php';
 session_start();
 // Inisialisasi data pembelian
@@ -66,9 +66,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Simpan data ke dalam database
     // Code untuk menyimpan data ke database di sini
     // Pastikan untuk mengganti bagian ini dengan logika penyimpanan ke database sesuai dengan struktur tabel Anda
+
+    // Memasukkan data detail pembelian ke dalam database
+    $pembelianId = $_POST['pembelianId'];
+    $produkIds = $_POST['produkId'];
+    $qtys = $_POST['qty'];
+    $hargaBelis = $_POST['hargaBeli'];
+
+    for ($i = 0; $i < count($produkIds); $i++) {
+        $produkId = $produkIds[$i];
+        $qty = $qtys[$i];
+        $hargaBeli = $hargaBelis[$i];
+
+        // Lakukan operasi penyimpanan ke dalam database sesuai dengan struktur tabel detail pembelian
+        // Contoh:
+        // $sqlInsertDetail = "INSERT INTO detail_pembelian (pembelian_id, produk_id, qty, harga_beli, created_at) VALUES ('$pembelianId', '$produkId', '$qty', '$hargaBeli', NOW())";
+        // $resultInsertDetail = $koneksi->query($sqlInsertDetail);
+    }
 }
 
-// Tutup conn
+// Tutup koneksi database
 $koneksi->close();
 ?>
 <!DOCTYPE html>
@@ -232,15 +249,12 @@ $koneksi->close();
 
 <body id="page-top">
 
-       <!-- Page Wrapper -->
-    
-
     <div style='display:flex;flex-direction:row;'>
 
         <div id="formContainer">
             <h2 class="">Tambah Pembelian</h2>
 
-            <form id="formTambahPembelian" method="post" action="detail_pembelian.php">
+            <form id="formTambahPembelian" method="post" action="proses_detail_pembelian.php">
 
                 <input type="hidden" id="pembelianId" name="pembelianId" value="">
 
@@ -303,18 +317,6 @@ $koneksi->close();
                 </thead>
                 <tbody id='tbody'>
                     
-                    <!-- <tr>
-                        <td>Kopi</td>
-                        <td>Rp. 25.000</td>
-                        <td><input type="number" id="qtyKopi" name="qtyKopi" min="0" style="width:60px;" oninput="hitungSisa()"></td>
-                        <td><input type="checkbox" class="selectProduct" id="chkKopi" name="selectProduct[]" value="Kopi" onchange="updateQty(this)"></td>
-                    </tr>
-                    <tr>
-                        <td>Nabati</td>
-                        <td>Rp. 20.000</td>
-                        <td><input type="number" id="qtyNabati" name="qtyNabati" min="0" style="width:60px;" oninput="hitungSisa()"></td>
-                        <td><input type="checkbox" class="selectProduct" id="chkNabati" name="selectProduct[]" value="Nabati" onchange="updateQty(this)"></td>
-                    </tr> -->
                 </tbody>
             </table>
             <br>
@@ -324,18 +326,42 @@ $koneksi->close();
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        // Fungsi untuk menghitung total pembelian dan memperbarui input tersembunyi
+        $(document).ready(function(){
+            // Event listener untuk perubahan nilai pada elemen select nama supplier
+            $('#id_suplier').change(function(){
+                var suplierId = $(this).val(); // Ambil nilai ID supplier yang dipilih
+                
+                if(suplierId != ''){
+                    // Kirim permintaan Ajax ke file PHP untuk mendapatkan produk berdasarkan supplier yang dipilih
+                    $.ajax({
+                        url: 'getproduksuplier.php',
+                        type: 'post',
+                        data: {id_suplier: suplierId},
+                        success:function(response){
+                            // Perbarui tampilan produk di halaman HTML dengan respons dari permintaan Ajax
+                            $('#tbody').html(response);
+                        }
+                    });
+                }else{
+                    // Kosongkan kontainer produk jika tidak ada supplier yang dipilih
+                    $('#tbody').html('');
+                }
+            });
+        });
+
+        // Fungsi untuk mengupdate total pembelian dan harga produk saat jumlah barang diubah atau checkbox dipilih
         function updateTotal() {
             let total = 0;
             const checkboxes = document.querySelectorAll('.selectProduct:checked');
             checkboxes.forEach(function (checkbox) {
                 const productName = checkbox.value;
                 const qty = parseFloat(document.getElementById('qty' + productName).value) || 0;
-                const harga = getProductPrice(productName); // Panggil fungsi getProductPrice() untuk mendapatkan harga produk
+                const harga = parseFloat(document.getElementById('hargaJual' + productName).value) || 0; // Ambil harga jual produk sesuai dengan nama produk
                 total += harga * qty;
             });
             document.getElementById('total').value = total; // Perbarui nilai input tersembunyi total
             document.getElementById('totalAmount').textContent = formatCurrency(total); // Format angka sebagai mata uang
+            hitungSisa(); // Hitung ulang sisa pembayaran
             return total;
         }
 
@@ -344,16 +370,18 @@ $koneksi->close();
             return 'Rp. ' + amount.toLocaleString('id-ID', { minimumFractionDigits: 2 });
         }
 
-        // Fungsi untuk mendapatkan harga produk berdasarkan namanya
-        function getProductPrice(productName) {
-            // Harga barang (di sini diimplementasikan secara statis, Anda dapat memodifikasi agar sesuai dengan kebutuhan Anda)
-            const harga_jual = {
-                "Ekonomi": 20000,
-                "Kopi": 25000,
-                "Nabati": 20000
-            };
-
-            return harga_jual[productName] || 0; // Kembalikan harga produk, jika tidak ada, kembalikan 0
+        // Fungsi untuk mendapatkan harga jual produk dari server berdasarkan nama produk
+        function getHarga(namaProduk) {
+            $.ajax({
+                url: 'getharga.php',
+                type: 'post',
+                data: {namaProduk: namaProduk},
+                success:function(response){
+                    // Perbarui nilai input harga jual dengan respons dari server
+                    $('#hargaJual' + namaProduk).val(response);
+                    updateTotal(); // Panggil kembali fungsi updateTotal() setelah mendapatkan harga jual produk
+                }
+            });
         }
 
         // Fungsi untuk menghitung sisa pembayaran dan memperbarui input tersembunyi
@@ -383,9 +411,8 @@ $koneksi->close();
             const qtyInput = document.getElementById('qty' + productName);
             qtyInput.value = element.checked ? 1 : 0;
             updateCheckbox(element, productName); // Perbarui checkbox saat jumlah barang diubah
-            hitungSisa();
+            getHarga(productName); // Dapatkan harga jual produk saat jumlah barang diubah
         }
-
 
         // Tambahkan event listener untuk checkbox dan input jumlah barang
         const checkboxes = document.querySelectorAll('.selectProduct');
@@ -407,81 +434,7 @@ $koneksi->close();
             hitungSisa();
             updateTotal();
         };
-
-        // Fungsi untuk menampilkan pesan dan mengonfirmasi pembelian selesai
-        function selesaiPembelian() {
-            // Hitung total
-            const total = updateTotal();
-            
-            // Dapatkan nilai bayar dari input
-            const bayarInput = document.getElementById('bayar');
-            const bayar = parseFloat(bayarInput.value) || 0; // tambahkan || 0 untuk menangani input yang kosong
-
-            // Hitung sisa pembayaran
-            const sisa = bayar - total;
-
-            // Perbarui tampilan sisa
-            document.getElementById('sisaBayar').textContent = isNaN(sisa) ? 0 : (sisa >= 0 ? sisa.toFixed(2) : 0);
-
-            // Tampilkan notifikasi sesuai dengan sisa pembayaran
-            if (!isNaN(total)) {
-                if (sisa >= 0) {
-                    // Jika pembayaran mencukupi
-                    alert('Pembelian berhasil. Total yang harus dibayar: Rp. ' + total.toFixed(2) + '. Sisa: Rp. ' + sisa.toFixed(2));
-                } else {
-                    // Jika pembayaran tidak mencukupi
-                    alert('Pembayaran tidak mencukupi. Total yang harus dibayar: Rp. ' + total.toFixed(2) + '. Silakan periksa kembali pembayaran Anda.');
-                }
-            } else {
-                // Jika jumlah barang yang dibeli tidak valid
-                alert('Mohon masukkan jumlah barang yang dibeli.');
-            }
-        }
-
-        $(document).ready(function(){
-            // Event listener untuk perubahan nilai pada elemen select nama supplier
-            $('#id_suplier').change(function(){
-                var suplierId = $(this).val(); // Ambil nilai ID supplier yang dipilih
-                
-                if(suplierId != ''){
-                    // Kirim permintaan Ajax ke file PHP untuk mendapatkan produk berdasarkan supplier yang dipilih
-                    $.ajax({
-                        url: 'getproduksuplier.php',
-                        type: 'post',
-                        data: {id_suplier: suplierId},
-                        success:function(response){
-                            // Perbarui tampilan produk di halaman HTML dengan respons dari permintaan Ajax
-                            $('#tbody').html(response);
-                        }
-                    });
-                }else{
-                    // Kosongkan kontainer produk jika tidak ada supplier yang dipilih
-                    $('#tbody').html('');
-                }
-            });
-});
-
-
     </script>
-
-    <!-- Bootstrap core JavaScript-->
-  
-    <script src="../SBAdmin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="../SBAdmin/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="../SBAdmin/js/sb-admin-2.min.js"></script>
-
-    <!-- Page level plugins -->
-    <script src="../SBAdmin/vendor/chart.js/Chart.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="../SBAdmin/js/demo/chart-area-demo.js"></script>
-    <script src="../SBAdmin/js/demo/chart-pie-demo.js"></script>
-
-    <!-- Additional custom scripts or scripts for handling data tables can be added here -->
 
 </body>
 

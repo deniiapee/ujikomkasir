@@ -277,7 +277,7 @@ session_start();
                                     echo "<td>" . $row["sisa"] . "</td>";
                                     echo "<td>" . $row["keterangan"] . "</td>";
                                     echo "<td>
-                                            <a href='edit_pembelian_barang.php?id=" . $row["pembelian_id"] . "' class='btn btn-success btn-sm'>Edit</a>
+                                            <a href='edit_pembelian.php?id=" . $row["pembelian_id"] . "' class='btn btn-success btn-sm'>Edit</a>
                                             <a href='hapus_pembelian.php?id=" . $row["pembelian_id"] . "' class='btn btn-danger btn-sm' onclick=\"return confirm('Apakah Anda yakin ingin menghapus data ini?')\">Delete</a>
                                         </td>";
                                     echo "</tr>";
