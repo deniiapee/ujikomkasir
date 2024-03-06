@@ -90,12 +90,12 @@ $result = mysqli_query($koneksi, $sql);
                 <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Data Master:</h6>
                         <a class="collapse-item active" href="toko.php">Toko</a>
                         <a class="collapse-item " href="kategori.php">Kategori</a>
                         <a class="collapse-item " href="list_produk.php">Produk</a>
                         <a class="collapse-item " href="pelanggan.php">Pelanggan</a>
                         <a class="collapse-item " href="supplier.php">Supplier</a>
+                        <a class="collapse-item" href="stock.php">stok</a>
                     </div>
                 </div>
             </li>
@@ -110,9 +110,8 @@ $result = mysqli_query($koneksi, $sql);
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Transaksi</h6>
                         <a class="collapse-item" href="pembelian.php">Pembelian</a>
-                        <a class="collapse-item" href="detail_penjualan.php">Detail penjualan</a>
+                        <a class="collapse-item" href="tabel_penjualan.php">Detail penjualan</a>
                         <a class="collapse-item" href="detail_pembelian.php">Detail pembelian</a>
         
                     </div>

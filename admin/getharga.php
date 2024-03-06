@@ -1,22 +1,26 @@
 <?php
+// include file koneksi database
 include '../koneksi.php';
 
-// Tangani data POST
+// tangkap namaProduk yang dikirim via AJAX
 $namaProduk = $_POST['namaProduk'];
 
-// Query untuk mengambil harga jual produk berdasarkan nama produk
+// buat query untuk mengambil harga jual produk berdasarkan nama produk
 $sql = "SELECT harga_jual FROM produk WHERE nama_produk = '$namaProduk'";
 $result = $koneksi->query($sql);
 
-// Ambil hasil query
+// cek apakah query berhasil dieksekusi
 if ($result->num_rows > 0) {
+    // ambil data harga jual dari hasil query
     $row = $result->fetch_assoc();
     $hargaJual = $row['harga_jual'];
-    echo $hargaJual; // Mengirimkan harga jual sebagai respons
+    // kirim harga jual sebagai respons AJAX
+    echo $hargaJual;
 } else {
-    echo "0"; // Jika tidak ada hasil, kirimkan 0 sebagai respons
+    // jika produk tidak ditemukan
+    echo "0"; // atau response lainnya sesuai kebutuhan Anda
 }
 
-// Tutup koneksi database
+// tutup koneksi database
 $koneksi->close();
 ?>

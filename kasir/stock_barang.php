@@ -1,15 +1,15 @@
-<?php 
-include ' ../../../koneksi.php';
+<?php
+include '../koneksi.php';
 
-session_start();
+// Ambil data stok barang beserta harga jual
+$sql = "SELECT * FROM produk";
+$result = mysqli_query($koneksi, $sql);
 
-$sql = "SELECT * FROM toko";
-$result = mysqli_query($koneksi,$sql);
-// if(!$_SESSION ["id"]){
-//     header('location:../login.php');
-// }
+if (!$result) {
+    die("Error: " . mysqli_error($koneksi));
+}
+
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,7 +21,7 @@ $result = mysqli_query($koneksi,$sql);
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Registrasi Pelanggan</title>
+    <title>stok</title>
 
     <!-- Custom fonts for this template-->
     <link href="../SBAdmin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -47,6 +47,8 @@ $result = mysqli_query($koneksi,$sql);
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fa-solid fa-cash-register"></i>
                 </div>
+                <div class="sidebar-brand-text mx-3">kasir</div>
+
             </a>
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
@@ -75,8 +77,7 @@ $result = mysqli_query($koneksi,$sql);
                     <span>Data Master</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>    
+                    <div class="bg-white py-2 collapse-inner rounded"> 
                         <a class="collapse-item active" href="pelanggan.php">Pelanggan</a>
                         <a class="collapse-item active" href="stock_barang.php">stok</a>
 
@@ -110,7 +111,12 @@ $result = mysqli_query($koneksi,$sql);
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
-        
+            <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                    <a class="nav-link" href="Logout.php">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>log out</span></a>
+                </li>
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
@@ -138,19 +144,7 @@ $result = mysqli_query($koneksi,$sql);
                     </button>
 
                     <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-
+                   
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
@@ -186,7 +180,7 @@ $result = mysqli_query($koneksi,$sql);
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class='mr-2 d-none d-lg-inline text-gray-600 small'><?= $_SESSION['username'] ?></span>
+                                <span class='mr-2 d-none d-lg-inline text-gray-600 small'></span>
                                <i class="fa-solid fa-right-from-bracket"></i>
                             </a>
                             <!-- Dropdown - User Information -->
@@ -201,103 +195,68 @@ $result = mysqli_query($koneksi,$sql);
 
                     </ul>
                 </nav>
-                <!-- End of Topbar -->
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Barang</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Stock Barang</h1>
 
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Nama Produk</th>
+                    <th scope="col">Stok</th>
+                    <th scope="col">Harga Jual</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+                    <tr>
+                        <td><?php echo $row['nama_produk']; ?></td>
+                        <td>
+                            <?php
+                            // Ambil stok dari masing-masing produk
+                            $produkId = $row['produk_id'];
+                            $sqlStok = "SELECT COALESCE(SUM(stock), 0) AS total_stok FROM produk WHERE produk_id = '$produkId'";
+                            $resultStok = mysqli_query($koneksi, $sqlStok);
 
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Pelanggan</h1>
-                        
-                <!-- /.container-fluid -->
+                            if (!$resultStok) {
+                                die("Error: " . mysqli_error($koneksi));
+                            }
 
-            </div>
-            <div class="row mx-auto col-lg-auto">
-    <form action="proses_tambah_pelanggan.php" method="post">
-      <div class="form-grup" id="perpustakaan-container">
-        </div>
-              <?php
-            if ($result) {
-                echo "<label for='toko'>Toko :</label>";
-                echo "<select class='form-control' name='toko' required>";
-
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $nama_toko = $row['nama_toko'];
-                    $toko_id = $row['toko_id'];
-                    echo "<option value='$toko_id'>$nama_toko</option>";
-                    }
-
-                    echo "</select>";
-                } else {
-                    echo "Gagal mengambil data";
-                }
-        ?>
-            <div class="form-group">
-                <label for="nama_pelanggan">Nama:</label>
-                <input type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" required>
-            </div>
-            <div class="form-group">
-                <label for="alamat_pelanggan">Alamat:</label>
-                <input type="text" class="form-control" id="alamat_pelanggan" name="alamat_pelanggan" required>
-            </div>
-            <div class="form-group">
-                <label for="no_hp">No HP:</label>
-                <input type="number" class="form-control" id="no_hp" name="no_hp" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Simpan</button>
-                </form>
-      
-            </div>
-            <!-- End of Main Content -->
-        </div>
-        <!-- End of Content Wrapper -->
-        <!-- Books Card Example -->
-<div class="row mx-auto col-lg-auto">
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="../login.php">Logout</a>
-                </div>
-            </div>
-        </div>
+                            $rowStok = mysqli_fetch_assoc($resultStok);
+                            $stok = $rowStok['total_stok'];
+                            echo $stok;
+                            ?>
+                        </td>
+                        <td><?php echo $row['harga_jual']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="../SBAdmin/vendor/jquery/jquery.min.js"></script>
-    <script src="../SBAdmin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="../SBAdmin/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="../SBAdmin/js/sb-admin-2.min.js"></script>
-
-    <!-- Page level plugins -->
-    <script src="../SBAdmin/vendor/chart.js/Chart.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="../SBAdmin/js/demo/chart-area-demo.js"></script>
-    <script src="../SBAdmin/js/demo/chart-pie-demo.js"></script>
-
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-
 </html>

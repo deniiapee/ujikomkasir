@@ -11,7 +11,6 @@ $result3 = mysqli_query($koneksi, $sql);
 ?>
 <!DOCTYPE html>
     <html lang="en">
-
     <head>
 
         <meta charset="utf-8">
@@ -71,8 +70,12 @@ $result3 = mysqli_query($koneksi, $sql);
                     </a>
                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
-                            <a class="collapse-item" href="pelanggan.php">Pelanggan</a>
-                            <a class="collapse-item active" href="stock_barang.php">stok</a>
+                        <a class="collapse-item" href="toko.php">Toko</a>
+                        <a class="collapse-item" href="kategori.php">Kategori</a>
+                        <a class="collapse-item" href="list_produk.php">Produk</a>
+                        <a class="collapse-item" href="pelanggan.php">Pelanggan</a>
+                        <a class="collapse-item" href="supplier.php">Supplier</a>
+                        <a class="collapse-item" href="stock.php">stock</a>
 
                         </div>
                     </div>
@@ -89,9 +92,9 @@ $result3 = mysqli_query($koneksi, $sql);
                     </a>
                     <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Transaksi</h6>
-                            <a class="collapse-item" href="penjualan.php">Penjualan</a>
-                            <a class="collapse-item" href="penjualan_detail.php">Detail penjualan</a>
+                        <a class="collapse-item" href="pembelian.php">Pembelian</a>
+                        <a class="collapse-item" href="tabel_penjualan.php">Detail penjualan</a>
+                        <a class="collapse-item" href="detail_pembelian.php">Detail pembelian</a>
 
                         </div>
                     </div>
@@ -233,21 +236,22 @@ $result = mysqli_query($koneksi, $sql);
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h2 class="text-center mb-5" style="font-weight: bold;">PENJUALAN</h2>
+                    <h2 class="text-center mb-5" style="font-weight: bold;">Penjualan</h2>
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                            <thead>
-                                <tr class="text-center" style="">                                   
-                                    <th>Toko</th>
-                                    <th>Nama Pelanggan</th>
-                                    <th>Total</th>
-                                    <th>Bayar</th>
-                                    <th>Sisa</th>
-                                    <th>Keterangan</th>
-                                    <th>Tanggal Dibuat</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
+                        <thead>
+    <tr>
+        <th style="font-weight: bold;">Toko</th>
+        <th style="font-weight: bold;">Nama Pelanggan</th>
+        <th style="font-weight: bold;">Total</th>
+        <th style="font-weight: bold;">Bayar</th>
+        <th style="font-weight: bold;">Sisa</th>
+        <th style="font-weight: bold;">Keterangan</th>
+        <th style="font-weight: bold;">Tanggal Dibuat</th>
+        <th style="font-weight: bold;">Aksi</th>
+    </tr>
+</thead>
+
                             <tbody>
                                 <?php
                                 if (mysqli_num_rows($result) > 0) {
@@ -261,7 +265,7 @@ $result = mysqli_query($koneksi, $sql);
                                         echo "<td>" . $row["sisa"] . "</td>";
                                         echo "<td>" . $row["keterangan"] . "</td>"; // Output harga beli dari tabel produk
                                         echo "<td>" . $row["created_at"] . "</td>";
-                                        echo "<td style='text-align: center;'>" . "<a href='penjualan_detail.php?id=". $row["penjualan_id"] ."' class='btn btn-primary'>Detail Penjualan</a>
+                                        echo "<td style='text-align: center;'>" . "<a href='detail_penjualan.php?id=". $row["penjualan_id"] ."' class='btn btn-primary'>Detail Penjualan</a>
                                         <a class='btn btn-danger' href='delete_penjualan.php?id=". $row['penjualan_id'] ."'>Hapus</a>
                                         </td>";                                      
                                         echo "</tr>";

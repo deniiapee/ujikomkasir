@@ -87,6 +87,7 @@ $result1 = mysqli_query($koneksi,$sql1);
                         <a class="collapse-item active" href="produk.php">Produk</a>
                         <a class="collapse-item" href="pelanggan.php">Pelanggan</a>
                         <a class="collapse-item" href="supplier.php">Supplier</a>
+                        <a class="collapse-item" href="stock.php">stok</a>
                     </div>
                 </div>
             </li>
@@ -101,8 +102,11 @@ $result1 = mysqli_query($koneksi,$sql1);
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Transaksi:</h6>
-                        <a class="collapse-item" href="pembelian.php">Pembelian</a>
+                    <h6 class="collapse-header">Transaksi</h6>
+                        <a class="collapse-item" href="pembelian.php">pembelian</a>
+                        <a class="collapse-item" href="tabel_penjualan.php">Detail penjualan</a>
+                        <a class="collapse-item" href="detail_pembelian.php">Detail pembelian</a>
+
                     </div>
                 </div>
             </li>
@@ -262,11 +266,7 @@ $result1 = mysqli_query($koneksi,$sql1);
                 <label for="harga_jual">Harga jual:</label>
                 <input type="number" class="form-control" id="harga_jual" name="harga_jual" required>
             </div>
-            <div class="form-group">
-                <label for="stoko">stok:</label>
-                <input type="number" class="form-control" id="stok" name="stok" required>
-            </div>
-            
+           
             <button type="submit" class="btn btn-primary">Simpan</button>
                 </form>
       

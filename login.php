@@ -25,8 +25,7 @@ session_start();
     <!-- Custom styles for this page -->
     <style>
         body {
-            background: url('background-image.jpg') center center fixed;
-            background-size: cover;
+            overflow: hidden;
         }
 
         .card {
@@ -44,6 +43,18 @@ session_start();
         .btn-user {
             border-radius: 8px;
         }
+
+        .walp{
+            border: 2px solid black;
+            position: absolute;
+            height: 100vh;
+            width:100%;
+            overflow: hidden;
+            margin-left: -255px;
+        }
+        .walp img{
+            max-width: 100%;
+        }
     </style>
 
 </head>
@@ -51,6 +62,9 @@ session_start();
 <body class="bg-gradient-primary d-flex align-items-center">
 
     <div class="container">
+        <div class="walp">
+            <img src="walp.png" alt="">
+        </div>
 
         <!-- Outer Row -->
         <div class="row justify-content-center">
@@ -64,7 +78,7 @@ session_start();
                             <div class="col-lg-12">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Login di Sini </h1>
+                                    <h1 class="h4 font-weight-bold text-gray-900 mb-4">Silahkan Login</h1>
                                     </div>
                                     <?php
                                     if (isset($_POST['login'])) {

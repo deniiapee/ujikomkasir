@@ -1,6 +1,7 @@
 <?php
 include '../koneksi.php';
 session_start();
+
 // Inisialisasi data pembelian
 $pembelianToAdd = [
     'pembelian_id' => '',
@@ -26,16 +27,6 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Ambil data user dari database
-$sql = "SELECT user_id, username FROM user";
-$result = $koneksi->query($sql);
-$userOptions = "";
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        $userOptions .= "<option value='" . $row["user_id"] . "'>" . $row["username"] . "</option>";
-    }
-}
-
 // Ambil data supplier dari database
 $sql = "SELECT suplier_id, nama_suplier FROM suplier";
 $result = $koneksi->query($sql);
@@ -52,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pembelianToAdd = [
         'pembelian_id' => $_POST['pembelianId'],
         'toko_id' => $_POST['tokoId'],
-        'user_id' => $_POST['userId'],
+        'user_id' => $_SESSION['user_id'],
         'no_faktur' => $_POST['noFaktur'],
         'tanggal_pembelian' => $_POST['tanggalPembelian'],
         'suplier_id' => $_POST['suplierId'],
@@ -63,31 +54,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'created_at' => $_POST['createdAt'],
     ];
 
-    // Simpan data ke dalam database
-    // Code untuk menyimpan data ke database di sini
-    // Pastikan untuk mengganti bagian ini dengan logika penyimpanan ke database sesuai dengan struktur tabel Anda
+    // Simpan data pembelian ke dalam database
+    $sql = "INSERT INTO pembelian (toko_id, user_id, no_faktur, tanggal_pembelian, suplier_id, total, bayar, sisa, keterangan, created_at) VALUES ('" . $pembelianToAdd['toko_id'] . "', '" . $pembelianToAdd['user_id'] . "', '" . $pembelianToAdd['no_faktur'] . "', '" . $pembelianToAdd['tanggal_pembelian'] . "', '" . $pembelianToAdd['suplier_id'] . "', '" . $pembelianToAdd['total'] . "', '" . $pembelianToAdd['bayar'] . "', '" . $pembelianToAdd['sisa'] . "', '" . $pembelianToAdd['keterangan'] . "', '" . $pembelianToAdd['created_at'] . "')";
+    $result = $koneksi->query($sql);
 
-    // Memasukkan data detail pembelian ke dalam database
-    $pembelianId = $_POST['pembelianId'];
-    $produkIds = $_POST['produkId'];
-    $qtys = $_POST['qty'];
-    $hargaBelis = $_POST['hargaBeli'];
+    if ($result) {
+        $pembelianId = $koneksi->insert_id; // Ambil ID pembelian yang baru saja dimasukkan
 
-    for ($i = 0; $i < count($produkIds); $i++) {
-        $produkId = $produkIds[$i];
-        $qty = $qtys[$i];
-        $hargaBeli = $hargaBelis[$i];
+        // Memasukkan data detail pembelian ke dalam database
+        $produkIds = $_POST['produkId'];
+        $qtys = $_POST['qty'];
+        $hargaBelis = $_POST['hargaBeli'];
 
-        // Lakukan operasi penyimpanan ke dalam database sesuai dengan struktur tabel detail pembelian
-        // Contoh:
-        // $sqlInsertDetail = "INSERT INTO detail_pembelian (pembelian_id, produk_id, qty, harga_beli, created_at) VALUES ('$pembelianId', '$produkId', '$qty', '$hargaBeli', NOW())";
-        // $resultInsertDetail = $koneksi->query($sqlInsertDetail);
+        for ($i = 0; $i < count($produkIds); $i++) {
+            $produkId = $produkIds[$i];
+            $qty = $qtys[$i];
+            $hargaBeli = $hargaBelis[$i];
+
+            // Lakukan operasi penyimpanan ke dalam database sesuai dengan struktur tabel detail pembelian
+            $sqlInsertDetail = "INSERT INTO pembelian_detail (pembelian_id, produk_id, qty, harga_beli, created_at) VALUES ('$pembelianId', '$produkId', '$qty', '$hargaBeli', NOW())";
+            $resultInsertDetail = $koneksi->query($sqlInsertDetail);
+        }
+
+        // Redirect ke halaman sukses atau halaman lain yang diinginkan
+        header("Location: detail_pembelian.php");
+        exit();
+    } else {
+        echo "Error: " . $sql . "<br>" . $koneksi->error;
     }
 }
 
 // Tutup koneksi database
 $koneksi->close();
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -254,7 +255,7 @@ $koneksi->close();
         <div id="formContainer">
             <h2 class="">Tambah Pembelian</h2>
 
-            <form id="formTambahPembelian" method="post" action="proses_detail_pembelian.php">
+            <form id="formTambahPembelian" method="post" action="detail_pembelian.php">
 
                 <input type="hidden" id="pembelianId" name="pembelianId" value="">
 
@@ -340,6 +341,9 @@ $koneksi->close();
                         success:function(response){
                             // Perbarui tampilan produk di halaman HTML dengan respons dari permintaan Ajax
                             $('#tbody').html(response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
                         }
                     });
                 }else{
@@ -371,18 +375,19 @@ $koneksi->close();
         }
 
         // Fungsi untuk mendapatkan harga jual produk dari server berdasarkan nama produk
-        function getHarga(namaProduk) {
-            $.ajax({
-                url: 'getharga.php',
-                type: 'post',
-                data: {namaProduk: namaProduk},
-                success:function(response){
-                    // Perbarui nilai input harga jual dengan respons dari server
-                    $('#hargaJual' + namaProduk).val(response);
-                    updateTotal(); // Panggil kembali fungsi updateTotal() setelah mendapatkan harga jual produk
-                }
-            });
+       // Fungsi untuk mendapatkan harga jual produk dari server berdasarkan nama produk
+    function getHarga(namaProduk) {
+    $.ajax({
+        url: 'getharga.php',
+        type: 'post',
+        data: {namaProduk: namaProduk},
+        success:function(response){
+            // Perbarui nilai input harga jual dengan respons dari server
+            $('#hargaJual' + namaProduk).val(response);
+            updateTotal(); // Panggil kembali fungsi updateTotal() setelah mendapatkan harga jual produk
         }
+    });
+}
 
         // Fungsi untuk menghitung sisa pembayaran dan memperbarui input tersembunyi
         function hitungSisa() {

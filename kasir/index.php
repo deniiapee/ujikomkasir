@@ -17,6 +17,8 @@ $sqlpenjualan = "SELECT * FROM penjualan";
 $result2 = mysqli_query($koneksi, $sqlpenjualan);
 
 
+
+
 ?>
 
 <!DOCTYPE html>
@@ -82,6 +84,8 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="pelanggan.php">Pelanggan</a>
+                        <a class="collapse-item" href="stock_barang.php">stok</a>
+
                     </div>
                 </div>
             </li>
@@ -97,7 +101,6 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Transaksi</h6>
                         <a class="collapse-item" href="penjualan.php">penjualan</a>
                         <a class="collapse-item" href="tabel_penjualan.php">tabel penjualan</a>
                     </div>
@@ -235,7 +238,7 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                                         </div>
                                         <!-- Replace the content below with relevant borrowing information -->
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">kategori</div>
-                                        <span class="info-box-number"><br><?php echo mysqli_num_rows($result) ?></br></span>
+                                        <span class="info-box-number"><br><?php echo mysqli_num_rows($result1) ?></br></span>
 
                                         <div class="number"></div>
                                     </div>
@@ -267,12 +270,11 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                            Barang Terjual
-                                        </div>
+                                    <a class="text-xs font-weight-bold text-success text-uppercase mb-1" href="tabel_penjualan.php">Barang terjual</a>
+
                                         <!-- Replace the content below with relevant user information -->
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">Barang Terjual</div>
-                                        <span class="info-box-number"><br><?php echo mysqli_num_rows($result) ?></br></span>
+                                        <span class="info-box-number"><br><?php echo mysqli_num_rows($result2) ?></br></span>
 
                                     </div>
                                     <div class="col-auto">

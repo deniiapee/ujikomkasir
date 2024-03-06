@@ -216,6 +216,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             <a class="collapse-item" href="pelanggan.php">Pelanggan</a>
+                            <a class="collapse-item active" href="stock_barang.php">stok</a>
+
                         </div>
                     </div>
                 </li>

@@ -3,6 +3,27 @@ include '../koneksi.php';
 
 session_start();
 
+// Query untuk mengambil total stok barang
+$sqlTotalStok = "SELECT SUM(stock) AS total_stok FROM produk";
+$resultTotalStok = mysqli_query($koneksi, $sqlTotalStok);
+
+if (!$resultTotalStok) {
+    die("Error: " . mysqli_error($koneksi));
+}
+
+$rowTotalStok = mysqli_fetch_assoc($resultTotalStok);
+$totalStok = $rowTotalStok['total_stok'];
+
+// Query untuk mengambil total penjualan
+$sqlTotalPenjualan = "SELECT COUNT(*) AS total_penjualan FROM penjualan";
+$resultTotalPenjualan = mysqli_query($koneksi, $sqlTotalPenjualan);
+
+if (!$resultTotalPenjualan) {
+    die("Error: " . mysqli_error($koneksi));
+}
+
+$rowTotalPenjualan = mysqli_fetch_assoc($resultTotalPenjualan);
+$totalPenjualan = $rowTotalPenjualan['total_penjualan'];
 
 // if(!$_SESSION ["id"]){
 //     header('location:../login.php');
@@ -15,8 +36,6 @@ $result1 = mysqli_query($koneksi, $sqlkategori);
 
 $sqlpenjualan = "SELECT * FROM penjualan";
 $result2 = mysqli_query($koneksi, $sqlpenjualan);
-
-
 ?>
 
 <!DOCTYPE html>
@@ -70,7 +89,6 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
             <hr class="sidebar-divider">
 
             <!-- Heading -->
-           
 
 
             <!-- Nav Item - Pages Collapse Menu -->
@@ -86,14 +104,12 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                         <a class="collapse-item" href="list_produk.php">Produk</a>
                         <a class="collapse-item" href="pelanggan.php">Pelanggan</a>
                         <a class="collapse-item" href="supplier.php">Supplier</a>
-                        <a class="collapse-item" href="stock.php">stock</a>
-                        <a class="collapse-item" href="stock_keluar.php">stock keluar</a>
-
+                        <a class="collapse-item" href="stock.php">stok</a>
 
                     </div>
                 </div>
             </li>
-            
+
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -101,14 +117,13 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
             <!-- Nav Item - Transaksi Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-                <i class="fa-solid fa-money-bill"></i>
+                    <i class="fa-solid fa-money-bill"></i>
                     <span>Transaksi</span>
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Transaksi</h6>
                         <a class="collapse-item" href="pembelian.php">Pembelian</a>
-                        <a class="collapse-item" href="detail_penjualan.php">Detail penjualan</a>
+                        <a class="collapse-item" href="tabel_penjualan.php">Detail penjualan</a>
                         <a class="collapse-item" href="detail_pembelian.php">Detail pembelian</a>
 
                     </div>
@@ -125,12 +140,12 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
             <!-- Nav Item - Tables -->
             <li class="nav-item">
                 <a class="nav-link" href="pengguna.php">
-                <i class="fa-regular fa-user"></i>
+                    <i class="fa-regular fa-user"></i>
                     <span>Data User</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="../Logout.php">
-                <i class="fa-solid fa-right-from-bracket"></i>
+                    <i class="fa-solid fa-right-from-bracket"></i>
                     <span>log out</span></a>
             </li>
 
@@ -229,7 +244,7 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-3">
-                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Data Barang</div>
+                                        <a class="text-xs font-weight-bold text-success text-uppercase mb-1" href="list_produk.php">Data Barang</a>
 
                                         <!-- Replace the content below with relevant book information -->
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">Data Barang</div>
@@ -246,12 +261,11 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2" style="width:190px;">
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            kategori
-                                        </div>
+                                    <a class="text-xs font-weight-bold text-success text-uppercase mb-1" href="kategori.php">kategori</a>
+
                                         <!-- Replace the content below with relevant borrowing information -->
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">kategori</div>
-                                        <span class="info-box-number"><br><?php echo mysqli_num_rows($result) ?></br></span>
+                                        <span class="info-box-number"><br><?php echo mysqli_num_rows($result1) ?></br></span>
 
                                         <div class="number"></div>
                                     </div>
@@ -265,12 +279,11 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2" style="width:190px;">
                                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            stock
+                                            stok
                                         </div>
                                         <!-- Replace the content below with relevant borrowing information -->
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">Stock Barang</div>
-                                        <span class="info-box-number"><br><?php echo mysqli_num_rows($result) ?></br></span>
-
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">Stok Barang</div>
+                                        <span class="info-box-number"><br><?php echo $totalStok; ?></br></span>
                                         <div class="number"></div>
                                     </div>
                                 </div>
@@ -283,12 +296,11 @@ $result2 = mysqli_query($koneksi, $sqlpenjualan);
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                            Barang Terjual
-                                        </div>
+                                    <a class="text-xs font-weight-bold text-success text-uppercase mb-1" href="tabel_penjualan.php">Barang terjual</a>
+
                                         <!-- Replace the content below with relevant user information -->
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">Barang Terjual</div>
-                                        <span class="info-box-number"><br><?php echo mysqli_num_rows($result) ?></br></span>
+                                        <span class="info-box-number"><br><?php echo $totalPenjualan; ?></br></span>
 
                                     </div>
                                     <div class="col-auto">
