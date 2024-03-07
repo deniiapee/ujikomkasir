@@ -8,7 +8,24 @@ $sql = "SELECT * FROM pelanggan";
 $result2 = mysqli_query($koneksi, $sql);
 $sql = "SELECT * FROM produk";
 $result3 = mysqli_query($koneksi, $sql);
+$tanggal_awal = '';
+$tanggal_akhir = '';
+
+// Cek apakah form filter tanggal telah disubmit
+if (isset($_POST['submit'])) {
+    // Ambil nilai tanggal awal dan tanggal akhir dari form
+    $tanggal_awal = $_POST['tanggal_awal'];
+    $tanggal_akhir = $_POST['tanggal_akhir'];
+
+    // Modifikasi format tanggal agar sesuai dengan format di dalam database (YYYY-MM-DD)
+    $tanggal_awal = date('Y-m-d', strtotime($tanggal_awal));
+    $tanggal_akhir = date('Y-m-d', strtotime($tanggal_akhir));
+
+   
+}
 ?>
+?>
+
 <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -93,7 +110,7 @@ $result3 = mysqli_query($koneksi, $sql);
                     <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="pembelian.php">Pembelian</a>
-                        <a class="collapse-item" href="tabel_penjualan.php">Detail penjualan</a>
+                        <a class="collapse-item" href="tabel_penjualan.php">Tabel penjualan</a>
                         <a class="collapse-item" href="detail_pembelian.php">Detail pembelian</a>
 
                         </div>
@@ -192,8 +209,6 @@ $result3 = mysqli_query($koneksi, $sql);
 
 
 <?php
-
-
 // Query untuk mengambil data penjualan_detail beserta informasi harga beli dari tabel produk
 $sql = "SELECT * FROM penjualan 
     INNER JOIN toko ON toko.toko_id = penjualan.toko_id
@@ -234,49 +249,65 @@ $result = mysqli_query($koneksi, $sql);
             <div id="content">
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                <form method="filter_penjualan.php" class="mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="tanggal_awal">Tanggal Awal</label>
+                    <input type="date" name="tanggal-awal" id="tanggal-awal" class="form-control" value="<?php echo $tanggal_awal; ?>">
+                </div>
+                <div class="col-md-4">
+                    <label for="tanggal_akhir">Tanggal Akhir</label>
+                    <input type="date" name="tanggal-akhir" id="tanggal-akhir" class="form-control" value="<?php echo $tanggal_akhir; ?>">
+                </div>
+                <div class="col-md-4">
+                    <button onclick="filterTanggal()"class="btn btn-primary mt-4">Filter</button>
+                </div>
+            </div>
+        </form>
 
                     <!-- Page Heading -->
                     <h2 class="text-center mb-5" style="font-weight: bold;">Penjualan</h2>
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-    <tr>
-        <th style="font-weight: bold;">Toko</th>
-        <th style="font-weight: bold;">Nama Pelanggan</th>
-        <th style="font-weight: bold;">Total</th>
-        <th style="font-weight: bold;">Bayar</th>
-        <th style="font-weight: bold;">Sisa</th>
-        <th style="font-weight: bold;">Keterangan</th>
-        <th style="font-weight: bold;">Tanggal Dibuat</th>
-        <th style="font-weight: bold;">Aksi</th>
-    </tr>
-</thead>
-
-                            <tbody>
-                                <?php
-                                if (mysqli_num_rows($result) > 0) {
-                                    // Output data dari setiap baris
-                                    while ($row = mysqli_fetch_assoc($result)) {
-                                        echo "<tr>";
-                                        echo "<td>" . $row["nama_toko"] . "</td>"; // Output nama produk
-                                        echo "<td>" . $row["nama_pelanggan"] . "</td>"; // Output nama produk
-                                        echo "<td>" . $row["total"] . "</td>";
-                                        echo "<td>" . $row["bayar"] . "</td>"; 
-                                        echo "<td>" . $row["sisa"] . "</td>";
-                                        echo "<td>" . $row["keterangan"] . "</td>"; // Output harga beli dari tabel produk
-                                        echo "<td>" . $row["created_at"] . "</td>";
-                                        echo "<td style='text-align: center;'>" . "<a href='detail_penjualan.php?id=". $row["penjualan_id"] ."' class='btn btn-primary'>Detail Penjualan</a>
-                                        <a class='btn btn-danger' href='delete_penjualan.php?id=". $row['penjualan_id'] ."'>Hapus</a>
-                                        </td>";                                      
-                                        echo "</tr>";
-
-                                    }
-                                } else {
-                                    echo "<tr><td colspan='7'>Tidak ada data</td></tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
+                   <!-- Tabel rekap penjualan -->
+        <div class="table-responsive">
+            <table class="table table-bordered" id = "bookTable">
+                <thead>
+                    <tr>
+                        <th>Toko</th>
+                        <th>Nama Pelanggan</th>
+                        <th>Total</th>
+                        <th>Bayar</th>
+                        <th>Sisa</th>
+                        <th>Keterangan</th>
+                        <th>Tanggal Dibuat</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+ <tbody>
+                            <?php
+                    // Cek apakah query berhasil dieksekusi dan mengembalikan data
+                    if (isset($result) && mysqli_num_rows($result) > 0) {
+                        // Output data dari setiap baris
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo "<tr>";
+                            echo "<td>" . $row["nama_toko"] . "</td>"; // Output nama toko
+                            echo "<td>" . $row["nama_pelanggan"] . "</td>"; // Output nama pelanggan
+                            echo "<td>" . $row["total"] . "</td>";
+                            echo "<td>" . $row["bayar"] . "</td>"; 
+                            echo "<td>" . $row["sisa"] . "</td>";
+                            echo "<td>" . $row["keterangan"] . "</td>"; // Output keterangan penjualan
+                            echo "<td>" . $row["created_at"] . "</td>"; // Output tanggal dibuat
+                            echo "<td style='text-align: center;'>" . "<a href='detail_penjualan.php?id=". $row["penjualan_id"] ."' class='btn btn-primary'>Detail Penjualan</a>
+                                  <a class='btn btn-danger' href='delete_penjualan.php?id=". $row['penjualan_id'] ."'>Hapus</a>
+                                  </td>"; // Output aksi (link detail dan hapus)
+                            echo "</tr>";
+                        }
+                    } else {
+                        // Tampilkan pesan jika tidak ada data yang ditemukan
+                        echo "<tr><td colspan='8'>Tidak ada data</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
                     </div>
                 <!-- /.container-fluid -->
             </div>
@@ -410,6 +441,44 @@ $koneksi->close();
         }
     });
 </script>
+<script>
+        function filterTanggal() {
+            var start = document.getElementById("tanggal-awal").value;
+            var end = document.getElementById("tanggal-akhir").value;
+            var table = document.getElementById("bookTable");
+            var rows = table.getElementsByTagName("tr");
+            
+            for (var i = 1; i < rows.length; i++) {
+                var row = rows[i];
+                var borrowCell = row.getElementsByTagName("td")[6]; // Mengubah index menjadi 1 karena kita ingin memeriksa tanggal pinjam
+                var borrowDate = new Date(borrowCell.textContent);
+                var rowVisible = true;
+                
+                if (start) {
+                    if (borrowDate < new Date(start)) {
+                        rowVisible = false;
+                    }
+                }
+                
+                if (end) {
+                    if (borrowDate > new Date(end)) {
+                        rowVisible = false;
+                    }
+                }
+                
+                // Menambahkan kondisi untuk memeriksa apakah tanggal pinjam sama dengan tanggal awal atau akhir
+                if (borrowDate.toDateString() === new Date(start).toDateString() || borrowDate.toDateString() === new Date(end).toDateString()) {
+                    rowVisible = true;
+                }
+                
+                if (rowVisible) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        }
+    </script>
 
 
 

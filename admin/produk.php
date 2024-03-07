@@ -104,7 +104,7 @@ $result1 = mysqli_query($koneksi,$sql1);
                     <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Transaksi</h6>
                         <a class="collapse-item" href="pembelian.php">pembelian</a>
-                        <a class="collapse-item" href="tabel_penjualan.php">Detail penjualan</a>
+                        <a class="collapse-item" href="tabel_penjualan.php">Tabel penjualan</a>
                         <a class="collapse-item" href="detail_pembelian.php">Detail pembelian</a>
 
                     </div>

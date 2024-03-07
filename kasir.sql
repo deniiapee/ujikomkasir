@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 06, 2024 at 12:19 AM
+-- Generation Time: Mar 07, 2024 at 05:32 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -42,7 +42,10 @@ CREATE TABLE `pelanggan` (
 
 INSERT INTO `pelanggan` (`pelanggan_id`, `toko_id`, `nama_pelanggan`, `alamat`, `no_hp`, `created_at`) VALUES
 (6, 9, 'deni', 'banjar', '08878987125', '2024-02-20 04:11:47'),
-(7, 9, 'jenal', 'warpey', '098767766', '2024-02-20 15:57:10');
+(7, 9, 'jenal', 'warpeyeum', '098767766', '2024-03-06 07:44:48'),
+(15, 9, 'andre', 'dobo', '09887656476', '2024-03-06 00:58:50'),
+(16, 9, 'dida', 'banjar', '09876556776', '2024-03-06 00:59:05'),
+(18, 9, 'agung', 'cimaragas', '09878786565', '2024-03-07 04:27:26');
 
 -- --------------------------------------------------------
 
@@ -61,25 +64,26 @@ CREATE TABLE `pembelian` (
   `bayar` int(11) NOT NULL,
   `sisa` int(11) NOT NULL,
   `keterangan` varchar(100) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `stock` int(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `pembelian`
 --
 
-INSERT INTO `pembelian` (`pembelian_id`, `toko_id`, `user_id`, `no_faktur`, `tanggal_pembelian`, `suplier_id`, `total`, `bayar`, `sisa`, `keterangan`, `created_at`) VALUES
-(10, 9, 1, '19-20240221', '0454-04-05', 10, 30000, 80000, -50000, 'pk', '2024-03-04 05:07:00'),
-(11, 9, 1, '20-20240221', '0012-12-12', 10, 26000, 30000, -4000, 'bayar', '2024-03-04 05:07:00'),
-(12, 9, 1, '21-20240221', '2024-02-21', 10, 25000, 30000, -5000, 'p', '2024-03-04 05:07:00'),
-(13, 9, 1, '22-20240222', '2024-02-22', 10, 25000, 30000, -5000, 'lunas', '2024-03-04 05:07:00'),
-(14, 9, 8, '23-20240222', '2024-02-22', 10, 25000, 30000, -5000, 'lunas', '2024-03-04 05:07:00'),
-(15, 9, 1, '24-20240222', '2024-02-22', 10, 30000, 50000, -20000, 'bayar', '2024-03-04 05:07:00'),
-(16, 9, 1, '25-20240222', '2024-02-22', 10, 30000, 40000, -10000, 'bayar', '2024-03-04 05:07:00'),
-(17, 9, 1, '26-20240222', '2024-02-22', 10, 25000, 30000, -5000, 'ok', '2024-03-04 05:07:00'),
-(18, 9, 4, '27-20240222', '2024-02-22', 10, 30000, 50000, -20000, 'lunas', '2024-03-04 05:07:00'),
-(19, 9, 4, '28-20240222', '2024-02-22', 10, 18000, 20000, -2000, 'p', '2024-03-04 05:07:00'),
-(20, 9, 4, '29-20240222', '2024-02-22', 10, 30000, 50000, -20000, 'ok', '2024-03-04 05:07:00');
+INSERT INTO `pembelian` (`pembelian_id`, `toko_id`, `user_id`, `no_faktur`, `tanggal_pembelian`, `suplier_id`, `total`, `bayar`, `sisa`, `keterangan`, `created_at`, `stock`) VALUES
+(10, 9, 1, '19-20240221', '0454-04-05', 10, 30000, 80000, 50000, 'di bayar', '2024-03-07 02:13:48', 10),
+(11, 9, 1, '20-20240221', '0012-12-12', 10, 26000, 30000, 4000, 'bayar', '2024-03-07 02:13:48', 0),
+(12, 9, 1, '21-20240221', '2024-02-21', 10, 25000, 30000, 5000, 'bayar', '2024-03-07 02:13:48', 10),
+(13, 9, 1, '22-20240222', '2024-02-22', 10, 25000, 30000, 5000, 'lunas', '2024-03-07 02:13:48', 10),
+(16, 9, 1, '25-20240222', '2024-02-22', 10, 30000, 40000, 10000, 'bayar', '2024-03-07 02:13:49', 50),
+(17, 9, 1, '26-20240222', '2024-02-22', 10, 25000, 30000, 5000, 'lunas', '2024-03-07 02:13:49', 10),
+(19, 9, 4, '28-20240222', '2024-02-22', 10, 18000, 20000, 2000, 'terbayar', '2024-03-07 02:13:49', 7),
+(20, 9, 4, '29-20240222', '2024-02-22', 10, 30000, 50000, 20000, 'kontan', '2024-03-07 02:13:49', 9),
+(27, 0, 0, 'F1709778477567', '2024-03-07', 10, 12000, 100000, 12000, 'ok', '2024-03-07 02:28:14', 232),
+(29, 0, 0, 'F1709780108471', '2024-03-07', 10, 12000, 100000, 1000, 'yes', '2024-03-07 02:58:12', 1),
+(30, 0, 0, 'F1709781247787', '2024-03-07', 9, 25000, 30000, 5000, 'alhamdulilah', '2024-03-07 03:15:00', 1);
 
 -- --------------------------------------------------------
 
@@ -135,7 +139,11 @@ CREATE TABLE `penjualan` (
 INSERT INTO `penjualan` (`penjualan_id`, `toko_id`, `user_id`, `tanggal_penjualan`, `pelanggan_id`, `total`, `bayar`, `sisa`, `keterangan`, `created_at`) VALUES
 (62, 9, 4, '2024-03-04', 6, 25000, 30000, 5000, 'ok', '2024-03-03 22:29:12'),
 (63, 9, 4, '2024-03-04', 6, 25000, 30000, 5000, 'lunas', '2024-03-03 22:43:46'),
-(64, 9, 4, '2024-03-04', 6, 30000, 40000, 10000, 'kontan', '2024-03-04 00:29:54');
+(64, 9, 4, '2024-03-04', 6, 30000, 40000, 10000, 'kontan', '2024-03-04 00:29:54'),
+(65, 9, 4, '2024-03-06', 15, 80000, 100000, 20000, 'terbayar', '2024-03-05 20:51:30'),
+(66, 9, 4, '2024-03-06', 0, 10000, 100000, 90000, 'terbayar', '2024-03-06 02:48:13'),
+(67, 9, 4, '2024-03-06', 16, 50000, 55000, 5000, 'di bayar', '2024-03-06 02:49:30'),
+(68, 9, 4, '2024-03-07', 15, 55000, 60000, 5000, 'dibayar', '2024-03-06 22:21:54');
 
 -- --------------------------------------------------------
 
@@ -163,7 +171,14 @@ INSERT INTO `penjualan_detail` (`penjualan_detail_id`, `penjualan_id`, `produk_i
 (4, 61, 35, 1, NULL, 2000, '2024-03-03 21:10:51'),
 (5, 62, 39, 2, NULL, 50000, '2024-03-03 22:29:12'),
 (6, 63, 39, 5, NULL, 125000, '2024-03-03 22:43:46'),
-(7, 64, 40, 2, NULL, 60000, '2024-03-04 00:29:54');
+(7, 64, 40, 2, NULL, 60000, '2024-03-04 00:29:54'),
+(8, 65, 50, 2, NULL, 10000, '2024-03-05 20:51:30'),
+(9, 65, 43, 2, NULL, 100000, '2024-03-05 20:51:30'),
+(10, 65, 39, 5, NULL, 125000, '2024-03-05 20:51:30'),
+(11, 66, 38, 5, NULL, 50000, '2024-03-06 02:48:13'),
+(12, 67, 43, 5, NULL, 250000, '2024-03-06 02:49:30'),
+(13, 68, 43, 5, NULL, 250000, '2024-03-06 22:21:54'),
+(14, 68, 50, 1, NULL, 5000, '2024-03-06 22:21:54');
 
 -- --------------------------------------------------------
 
@@ -189,14 +204,23 @@ CREATE TABLE `produk` (
 --
 
 INSERT INTO `produk` (`produk_id`, `toko_id`, `nama_produk`, `kategori_id`, `satuan`, `harga_beli`, `harga_jual`, `created_at`, `stock`, `suplier_id`) VALUES
-(35, 9, 'panta', 14, '    botol', 0, 6000, '2024-03-05 00:47:26', 50, 10),
-(38, 9, 'kecap', 12, '    pcs', 0, 10000, '2024-03-04 07:21:35', 10, 9),
-(39, 9, 'jarum super', 8, 'bungkus', 0, 25000, '2024-03-04 07:21:42', 28, 12),
+(35, 9, 'panta', 8, '      botol', 0, 6000, '2024-03-06 00:46:22', 15, 10),
+(38, 9, 'kecap', 12, '    pcs', 0, 10000, '2024-03-06 08:48:13', 6, 9),
+(39, 9, 'jarum super', 8, 'bungkus', 0, 25000, '2024-03-06 02:51:31', 23, 12),
 (40, 9, 'magnum', 8, ' bungkus', 0, 30000, '2024-03-04 07:20:35', 18, 12),
 (41, 9, 'la', 8, 'pcs', 0, 12000, '2024-03-04 07:21:59', 10, 12),
 (42, 9, 'sampoerna mild', 8, 'bungkus', 0, 32000, '2024-03-04 15:27:07', 10, 12),
-(43, 9, 'mie instan', 12, 'bungkus', 0, 50000, '2024-03-04 15:35:34', 0, 0),
-(44, 9, 'gudang garam', 8, 'bungkus', 0, 24000, '2024-03-04 15:36:23', 0, 0);
+(43, 9, 'mie instan', 12, 'bungkus', 0, 50000, '2024-03-07 04:21:54', 0, 9),
+(44, 9, 'gudang garam', 8, 'bungkus', 0, 24000, '2024-03-06 00:45:48', 15, 9),
+(45, 9, 'sprit', 14, 'botol', 0, 5000, '2024-03-06 00:45:48', 20, 10),
+(46, 9, 'marjan', 14, 'kardus', 0, 100000, '2024-03-06 00:45:48', 25, 10),
+(47, 9, '76 mangga', 8, 'bungkus', 0, 14000, '2024-03-06 00:45:48', 15, 12),
+(48, 9, 'kinderjoy', 12, 'pcs', 0, 15000, '2024-03-06 00:45:48', 5, 9),
+(50, 9, 'nipis madu', 14, 'botol', 0, 5000, '2024-03-07 04:21:54', 17, 10),
+(51, 9, 'pop mie', 12, 'kardus', 0, 50000, '2024-03-06 01:32:56', 20, 9),
+(52, 9, 'la bold', 8, 'bungkus', 0, 25000, '2024-03-06 01:32:44', 15, 12),
+(53, 9, 'susu', 8, '  box', 0, 19000, '2024-03-06 08:50:31', 9, 10),
+(54, 9, 'sprit', 14, 'botol', 0, 5000, '2024-03-06 03:13:06', 5, 10);
 
 -- --------------------------------------------------------
 
@@ -239,19 +263,6 @@ CREATE TABLE `stock` (
 INSERT INTO `stock` (`id`, `produk_id`, `jumlah_masuk`, `tanggal_masuk`) VALUES
 (1, 37, 10, '0000-00-00'),
 (2, 37, 10, '0000-00-00');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `stock_keluar`
---
-
-CREATE TABLE `stock_keluar` (
-  `id` int(11) NOT NULL,
-  `produk_id` int(11) NOT NULL,
-  `jumlah_keluar` int(11) NOT NULL,
-  `tanggal_keluar` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -377,12 +388,6 @@ ALTER TABLE `stock`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `stock_keluar`
---
-ALTER TABLE `stock_keluar`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `suplier`
 --
 ALTER TABLE `suplier`
@@ -408,13 +413,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `pelanggan`
 --
 ALTER TABLE `pelanggan`
-  MODIFY `pelanggan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `pelanggan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `pembelian`
 --
 ALTER TABLE `pembelian`
-  MODIFY `pembelian_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `pembelian_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `pembelian_detail`
@@ -426,37 +431,31 @@ ALTER TABLE `pembelian_detail`
 -- AUTO_INCREMENT for table `penjualan`
 --
 ALTER TABLE `penjualan`
-  MODIFY `penjualan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+  MODIFY `penjualan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- AUTO_INCREMENT for table `penjualan_detail`
 --
 ALTER TABLE `penjualan_detail`
-  MODIFY `penjualan_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `penjualan_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `produk`
 --
 ALTER TABLE `produk`
-  MODIFY `produk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `produk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `produk_kategori`
 --
 ALTER TABLE `produk_kategori`
-  MODIFY `kategori_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `kategori_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `stock`
 --
 ALTER TABLE `stock`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT for table `stock_keluar`
---
-ALTER TABLE `stock_keluar`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `suplier`

@@ -213,6 +213,10 @@ if (!$result) {
             text-align: center;
             margin-top: 20px;
         }
+        /* CSS untuk mengatur rata kanan pada kolom harga jual */
+        td.harga-jual {
+            text-align: right;
+        }
     </style>
 </head>
 <body>
@@ -220,37 +224,39 @@ if (!$result) {
         <h1>Stock Barang</h1>
 
         <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Nama Produk</th>
-                    <th scope="col">Stok</th>
-                    <th scope="col">Harga Jual</th>
-                </tr>
-            </thead>
+        <thead class="thead-dark">
+    <tr>
+        <th scope="col">Nama Produk</th>
+        <th scope="col">Stok</th>
+        <th scope="col" class="harga-jual">Harga Jual</th> <!-- Tambahkan class harga-jual di sini -->
+    </tr>
+</thead>
+
             <tbody>
-                <?php while ($row = mysqli_fetch_assoc($result)) { ?>
-                    <tr>
-                        <td><?php echo $row['nama_produk']; ?></td>
-                        <td>
-                            <?php
-                            // Ambil stok dari masing-masing produk
-                            $produkId = $row['produk_id'];
-                            $sqlStok = "SELECT COALESCE(SUM(stock), 0) AS total_stok FROM produk WHERE produk_id = '$produkId'";
-                            $resultStok = mysqli_query($koneksi, $sqlStok);
+    <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+        <tr>
+            <td><?php echo $row['nama_produk']; ?></td>
+            <td>
+                <?php
+                // Ambil stok dari masing-masing produk
+                $produkId = $row['produk_id'];
+                $sqlStok = "SELECT COALESCE(SUM(stock), 0) AS total_stok FROM produk WHERE produk_id = '$produkId'";
+                $resultStok = mysqli_query($koneksi, $sqlStok);
 
-                            if (!$resultStok) {
-                                die("Error: " . mysqli_error($koneksi));
-                            }
+                if (!$resultStok) {
+                    die("Error: " . mysqli_error($koneksi));
+                }
 
-                            $rowStok = mysqli_fetch_assoc($resultStok);
-                            $stok = $rowStok['total_stok'];
-                            echo $stok;
-                            ?>
-                        </td>
-                        <td><?php echo $row['harga_jual']; ?></td>
-                    </tr>
-                <?php } ?>
-            </tbody>
+                $rowStok = mysqli_fetch_assoc($resultStok);
+                $stok = $rowStok['total_stok'];
+                echo $stok;
+                ?>
+            </td>
+            <td class="harga-jual"><?php echo number_format($row['harga_jual'], 0, ',', '.'); ?></td> <!-- Tambahkan class harga-jual di sini -->
+        </tr>
+    <?php } ?>
+</tbody>
+
         </table>
     </div>
 

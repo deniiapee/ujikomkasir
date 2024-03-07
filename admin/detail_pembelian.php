@@ -89,7 +89,7 @@ session_start();
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="pembelian.php">Pembelian</a>
-                        <a class="collapse-item" href="tabel_penjualan.php">Detail Penjualan</a>
+                        <a class="collapse-item" href="tabel_penjualan.php">Tabel penjualan</a>
                         <a class="collapse-item active" href="detail_pembelian.php">Detail Pembelian</a>
                     </div>
                 </div>

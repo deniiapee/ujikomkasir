@@ -99,7 +99,7 @@ $result = mysqli_query($koneksi, $sql);
                     <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="pembelian.php">Pembelian</a>
-                        <a class="collapse-item" href="tabel_penjualan.php">Detail penjualan</a>
+                        <a class="collapse-item" href="tabel_penjualan.php">Tabel penjualan</a>
                         <a class="collapse-item" href="detail_pembelian.php">Detail pembelian</a>
 
                         </div>
